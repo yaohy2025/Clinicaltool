@@ -37,9 +37,11 @@ a{color:inherit}
 .toolbar input{border:1px solid #d1d5db;border-radius:9px;padding:8px 12px;font-size:14px;outline:none;flex:1;min-width:0}
 .toolbar input:focus{border-color:#2563eb;box-shadow:0 0 0 3px #dbeafe}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font-size:12px;padding:4px 11px;border-radius:999px;background:#eef2ff;color:#3730a3;cursor:pointer;border:1px solid transparent;user-select:none}
+.chip{font-size:12px;padding:4px 11px;border-radius:999px;background:#eef2ff;color:#3730a3;cursor:pointer;border:1px solid transparent;user-select:none;white-space:nowrap}
 .chip:hover{background:#e0e7ff}
 .chip.active{background:#2563eb;color:#fff}
+.sel-cat{font-size:12px;padding:5px 8px;border-radius:8px;border:1px solid #d1d5db;background:#fff;color:#374151;max-width:160px;min-width:90px;cursor:pointer;outline:none}
+.sel-cat:disabled{background:#f3f4f6;color:#9ca3af}
 .content{flex:1;display:flex;min-height:0}
 .list{width:320px;min-width:320px;overflow:auto;background:#fff;border-right:1px solid #e5e7eb}
 .item{padding:11px 14px;border-bottom:1px solid #f1f5f9;cursor:pointer}
@@ -901,7 +903,16 @@ function catsOf(id){
 function listOf(id){
   const q = state.q.trim().toLowerCase();
   let arr = DB[id];
-  if(state.cat!=='__ALL__') arr = arr.filter(r=>r.category===state.cat);
+  if(state.cat!=='__ALL__'){
+    if(state.mod==='drugs_peds' && state.cat.includes('-')){
+      arr = arr.filter(r=>r.category===state.cat);
+    } else if(state.mod==='drugs_peds'){
+      // 仅章名：匹配该章下所有节
+      arr = arr.filter(r=>r.category && (r.category===state.cat || r.category.startsWith(state.cat+'-')));
+    } else {
+      arr = arr.filter(r=>r.category===state.cat);
+    }
+  }
   if(q){
     arr = arr.filter(r=> (r.py&&r.py.includes(q)) || recText(r).includes(q));
   }
@@ -923,6 +934,33 @@ function renderSide(){
 }
 function renderChips(){
   const el=document.getElementById('chips');
+  if(state.mod==='drugs_peds'){
+    // 儿童用药：章/节两级下拉，节省移动端空间
+    const records = DB.drugs_peds || [];
+    const chapters = [...new Set(records.map(r=>(r.category||'').split('-')[0]).filter(Boolean))].sort();
+    const curChap = state.cat==='__ALL__' ? '' : (state.cat.includes('-') ? state.cat.split('-')[0] : state.cat);
+    const sections = curChap ? [...new Set(records.filter(r=>(r.category||'').startsWith(curChap+'-')).map(r=>(r.category||'').split('-').slice(1).join('-')))].sort() : [];
+    let html = '<span class="chip'+(state.cat==='__ALL__'?' active':'')+'" data-c="__ALL__">全部</span>';
+    html += '<select id="chapSel" class="sel-cat"><option value="">按章筛选</option>'+chapters.map(c=>'<option value="'+esc(c)+'"'+(c===curChap?' selected':'')+'>'+esc(c)+'</option>').join('')+'</select>';
+    html += '<select id="secSel" class="sel-cat"'+(curChap?'':' disabled')+'><option value="">'+(curChap?'选择节':'先选章')+'</option>'+sections.map(s=>'<option value="'+esc(s)+'"'+(state.cat===curChap+'-'+s?' selected':'')+'>'+esc(s)+'</option>').join('')+'</select>';
+    el.innerHTML = html;
+    const chapSel=document.getElementById('chapSel'), secSel=document.getElementById('secSel');
+    if(chapSel) chapSel.onchange=()=>{
+      const c=chapSel.value;
+      if(!c){ state.cat='__ALL__'; }
+      else { state.cat=c; }
+      state.sel=-1; renderChips(); renderList(); renderDetail();
+    };
+    if(secSel) secSel.onchange=()=>{
+      const c=chapSel.value, s=secSel.value;
+      if(c && s){ state.cat=c+'-'+s; }
+      else if(c){ state.cat=c; }
+      else { state.cat='__ALL__'; }
+      state.sel=-1; renderList(); renderDetail();
+    };
+    el.querySelector('[data-c="__ALL__"]').onclick=()=>{ state.cat='__ALL__'; state.sel=-1; renderChips(); renderList(); renderDetail(); };
+    return;
+  }
   const cats = catsOf(state.mod);
   let html = '<span class="chip'+(state.cat==='__ALL__'?' active':'')+'" data-c="__ALL__">全部</span>';
   html += cats.map(c=>'<span class="chip'+(state.cat===c?' active':'')+'" data-c="'+esc(c)+'">'+esc(c)+'</span>').join('');
