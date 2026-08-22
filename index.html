@@ -51,6 +51,7 @@ a{color:inherit}
 .empty{color:#9ca3af;text-align:center;padding:40px;font-size:14px}
 .dheader{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .dtitle{font-size:20px;font-weight:700}
+.ped-tag{display:inline-block;background:#dcfce7;border:1px solid #86efac;color:#166534;border-radius:6px;padding:3px 10px;margin-bottom:12px;font-size:12.5px;font-weight:600}
 .badge{font-size:12px;background:#eef2ff;color:#3730a3;border-radius:6px;padding:2px 9px;margin-top:3px}
 .copybtn{margin-left:auto;background:#2563eb;color:#fff;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px}
 .copybtn:hover{background:#1d4ed8}
@@ -201,6 +202,7 @@ a{color:inherit}
 <div class="toast" id="toast"></div>
 <script src="data/diseases.js"></script>
 <script src="data/drugs.js"></script>
+<script src="data/drugs_peds.js"></script>
 <script src="data/labs.js"></script>
 <script src="data/symptoms.js"></script>
 <script src="data/procedures.js"></script>
@@ -858,6 +860,7 @@ function kdzZ(sex,height,weight,seg1,seg5,seg6,seg11,method){
 const MODULES = [
   {id:'diseases',   label:'疾病库', icon:'🩺'},
   {id:'drugs',      label:'用药',   icon:'💊'},
+  {id:'drugs_peds', label:'儿童用药', icon:'🧸'},
   {id:'labs',       label:'检验',   icon:'🧪'},
   {id:'symptoms',   label:'症状',   icon:'🌡️'},
   {id:'procedures', label:'操作',   icon:'🛠️'},
@@ -988,6 +991,15 @@ const RENDER = {
     + sec('相互作用','interaction',r,'pre') + sec('药理作用','pharmacology',r,'pre')
     + sec('药代动力学','pharmacokinetics',r,'pre') + sec('特殊人群','special_population',r,'pre')
     + sec('注意事项','notes',r,'pre'),
+  drugs_peds: r=> header(r, (r.en_name?r.en_name+' · ':'')+r.category+(r.spec && r.spec!=='详见用法用量'?' · '+r.spec:''))
+    + '<div class="ped-tag">儿童专用 · 源自《儿科实用药物速查手册》（魏克伦）</div>'
+    + sec('用法用量（按年龄/体重）','dose',r,'pre')
+    + sec('儿童特殊人群','special_population',r,'pre')
+    + sec('适应证','indication',r,'pre') + sec('不良反应','adverse',r,'pre')
+    + sec('禁忌','contraindication',r,'pre') + sec('相互作用','interaction',r,'pre')
+    + sec('药理作用','pharmacology',r,'pre') + sec('药代动力学','pharmacokinetics',r,'pre')
+    + sec('用药过量','overdose',r,'pre') + sec('超说明书用药','offlabel',r,'pre')
+    + sec('成分','ingredient',r,'pre') + sec('注意事项','notes',r,'pre'),
   labs: r=> header(r, r.category+(r.abbr?' · '+r.abbr:''))
     + '<div class="sec"><div class="sec-t">参考范围</div><pre>'+esc((r.normal||'')+(r.unit?' '+r.unit:''))+'</pre></div>'
     + sec('升高意义','high',r,'pre') + sec('降低意义','low',r,'pre')
