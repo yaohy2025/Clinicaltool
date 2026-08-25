@@ -24,13 +24,23 @@ a{color:inherit}
 .gsitem .t{font-weight:600}
 .gsitem .m{font-size:11px;color:#2563eb;background:#eef2ff;border-radius:6px;padding:1px 7px;margin-right:6px}
 .body{flex:1;display:flex;min-height:0}
-.side{width:148px;min-width:148px;background:#0f2257;color:#cdd6f4;overflow:auto;flex:none;padding:8px 0}
+.side{width:160px;min-width:160px;background:#0f2257;color:#cdd6f4;overflow:auto;flex:none;padding:8px 0}
+.side .reset{padding:7px 14px;font-size:11px;color:#94a3b8;cursor:pointer;display:flex;align-items:center;gap:5px;user-select:none;border-bottom:1px solid #16285f;margin-bottom:4px;flex-wrap:nowrap}
+.side .reset:hover{color:#fff;background:#16285f}
 .side .mi{padding:11px 14px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px;
-  border-left:3px solid transparent;user-select:none}
+  border-left:3px solid transparent;user-select:none;position:relative}
 .side .mi:hover{background:#16285f}
 .side .mi.active{background:#16285f;border-left-color:#60a5fa;color:#fff}
+.side .mi .grip{cursor:grab;font-size:11px;opacity:.45;letter-spacing:1px;color:#94a3b8;flex:none;line-height:1}
+.side .mi:hover .grip{opacity:.9}
+.side .mi:active .grip{cursor:grabbing}
+.side .mi.dragging{opacity:.35}
+.side .mi.drag-over-top::before,.side .mi.drag-over-bottom::after{content:"";position:absolute;left:0;right:0;height:2px;background:#60a5fa;pointer-events:none}
+.side .mi.drag-over-top::before{top:-1px}
+.side .mi.drag-over-bottom::after{bottom:-1px}
 .side .mi .ic{font-size:16px}
 .side .mi .ct{margin-left:auto;font-size:11px;background:#1e3a8a;color:#cbd5e1;border-radius:999px;padding:0 7px}
+.side-empty{padding:14px;color:#94a3b8;font-size:12px;text-align:center}
 .main{flex:1;display:flex;flex-direction:column;min-width:0;background:#f5f7fb}
 .toolbar{flex:none;padding:10px 14px;border-bottom:1px solid #e5e7eb;background:#fff;display:flex;flex-direction:column;gap:8px}
 .toolbar .row{display:flex;gap:10px;align-items:center}
@@ -77,8 +87,9 @@ a{color:inherit}
 .dbody{padding:18px 22px}
 @media(max-width:760px){
   .side{width:100%;display:flex;overflow-x:auto;padding:4px 0}
+  .side .reset{display:none}
   .side .mi{border-left:none;border-bottom:3px solid transparent;white-space:nowrap}
-  .side .mi .ct{display:none}
+  .side .mi .ct,.side .mi .grip{display:none}
   .body{flex-direction:column}
   .main{flex:1;min-height:0}
   .content{flex-direction:column;flex:1;min-height:0}
@@ -389,6 +400,29 @@ const MODULES = [
   {id:'calc',       label:'计算器', icon:'🧮'}
 ];
 
+/* ---------- 模块顺序持久化（拖拽排序） ---------- */
+const MODULE_ORDER_KEY = 'clinical_module_order_v1';
+function applyModuleOrder(){
+  let saved=null;
+  try{ saved=JSON.parse(localStorage.getItem(MODULE_ORDER_KEY)||'null'); }catch(e){}
+  if(!Array.isArray(saved) || !saved.length) return;
+  const map=new Map(MODULES.map(m=>[m.id,m]));
+  const ordered=[];
+  saved.forEach(function(id){ const m=map.get(id); if(m){ ordered.push(m); map.delete(id); } });
+  map.forEach(function(m){ ordered.push(m); });
+  if(ordered.length!==MODULES.length) return;
+  MODULES.length=0;
+  ordered.forEach(function(m){ MODULES.push(m); });
+}
+function saveModuleOrder(){
+  try{ localStorage.setItem(MODULE_ORDER_KEY, JSON.stringify(MODULES.map(function(m){return m.id;}))); }catch(e){}
+}
+function resetModuleOrder(){
+  try{ localStorage.removeItem(MODULE_ORDER_KEY); }catch(e){}
+  location.reload();
+}
+applyModuleOrder();
+
 const DB = (window.CLINICAL_DB && typeof window.CLINICAL_DB==='object') ? window.CLINICAL_DB : {};
 MODULES.forEach(m=>{ if(!Array.isArray(DB[m.id])) DB[m.id]=[]; });
 (function(){
@@ -432,13 +466,78 @@ function subText(r){
 }
 function renderSide(){
   const el=document.getElementById('side');
-  el.innerHTML = MODULES.map(m=>{
+  let html = '<div class="reset" id="modReset" title="清除自定义顺序，恢复默认">'
+    + '<span style="font-size:13px">↻</span><span>恢复默认顺序</span></div>';
+  html += MODULES.map(m=>{
     const n = (m.id==='calc') ? (typeof CALCS!=='undefined'?CALCS.length:0) : (DB[m.id]?DB[m.id].length:0);
-    return '<div class="mi'+(m.id===state.mod?' active':'')+'" data-mod="'+m.id+'">'
+    return '<div class="mi'+(m.id===state.mod?' active':'')+'" draggable="true" data-mod="'+m.id+'" title="按住 ⋮⋮ 拖动可调整顺序">'
+      +'<span class="grip" aria-hidden="true">⋮⋮</span>'
       +'<span class="ic">'+m.icon+'</span><span>'+m.label+'</span><span class="ct">'+n+'</span></div>';
   }).join('');
-  el.querySelectorAll('.mi').forEach(d=>d.onclick=()=>{ state.mod=d.dataset.mod; state.cat='__ALL__'; state.q=''; state.sel=-1;
-    document.getElementById('q').value=''; renderSide(); renderChips(); renderList(); renderDetail(); });
+  el.innerHTML = html || '<div class="side-empty">暂无可用模块</div>';
+  document.getElementById('modReset').onclick = function(){
+    if(confirm('确定要将侧边栏模块顺序恢复到默认吗？')) resetModuleOrder();
+  };
+  el.querySelectorAll('.mi').forEach(d=>{
+    d.onclick = function(ev){
+      // 如果刚完成拖拽，忽略 click
+      if(d._suppressClick){ d._suppressClick=false; return; }
+      state.mod=d.dataset.mod; state.cat='__ALL__'; state.q=''; state.sel=-1;
+      document.getElementById('q').value=''; renderSide(); renderChips(); renderList(); renderDetail();
+    };
+    bindModuleDrag(d, el);
+  });
+}
+function bindModuleDrag(item, container){
+  item.addEventListener('dragstart', function(ev){
+    ev.dataTransfer.effectAllowed='move';
+    try{ ev.dataTransfer.setData('text/plain', item.dataset.mod); }catch(e){}
+    // 延迟加 class，否则拖影本身会带上半透明
+    setTimeout(function(){ item.classList.add('dragging'); }, 0);
+  });
+  item.addEventListener('dragend', function(ev){
+    item.classList.remove('dragging');
+    container.querySelectorAll('.mi').forEach(x=>x.classList.remove('drag-over-top','drag-over-bottom'));
+    // 此时 DOM 已经被 dragover 实时重排，读取当前顺序即可
+    const newOrder = Array.from(container.querySelectorAll('.mi')).map(x=>x.dataset.mod);
+    rebuildModules(newOrder);
+    item._suppressClick = true;
+  });
+  item.addEventListener('dragover', function(ev){
+    if(!ev.dataTransfer) return;
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect='move';
+    const dragging = container.querySelector('.mi.dragging');
+    if(!dragging || dragging===item) return;
+    const r = item.getBoundingClientRect();
+    const isTop = (ev.clientY - r.top) < r.height/2;
+    if(isTop){
+      container.insertBefore(dragging, item);
+    }else{
+      container.insertBefore(dragging, item.nextSibling);
+    }
+  });
+  item.addEventListener('drop', function(ev){
+    ev.preventDefault();
+    ev.stopPropagation();
+  });
+  // 抓握手柄上的 mousedown：阻止默认避免文字选中
+  const grip = item.querySelector('.grip');
+  if(grip){
+    grip.addEventListener('mousedown', function(ev){ ev.preventDefault(); });
+    grip.addEventListener('selectstart', function(ev){ ev.preventDefault(); });
+  }
+}
+function rebuildModules(idOrder){
+  if(!Array.isArray(idOrder) || !idOrder.length) return;
+  const map = new Map(MODULES.map(m=>[m.id,m]));
+  const next=[];
+  idOrder.forEach(function(id){ const m=map.get(id); if(m){ next.push(m); map.delete(id); } });
+  // 任何未列入的（如后期 push 的 ped_* 模块）追加到末尾
+  map.forEach(function(m){ next.push(m); });
+  MODULES.length=0;
+  next.forEach(function(m){ MODULES.push(m); });
+  saveModuleOrder();
 }
 function renderChips(){
   const el=document.getElementById('chips');
