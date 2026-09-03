@@ -40,6 +40,19 @@ a{color:inherit}
 .side .mi.drag-over-bottom::after{bottom:-1px}
 .side .mi .ic{font-size:16px}
 .side .mi .ct{margin-left:auto;font-size:11px;background:#1e3a8a;color:#cbd5e1;border-radius:999px;padding:0 7px}
+.side .grp{padding:9px 12px 6px;font-size:11.5px;font-weight:600;color:#8fa3d0;letter-spacing:.6px;
+  cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;margin-top:7px;border-top:1px solid #16285f}
+.side .grp:first-of-type{border-top:none;margin-top:0}
+.side .grp:hover{color:#fff}
+.side .grp .arw{font-size:9px;transition:transform .15s;display:inline-block;color:#64748b}
+.side .grp.closed .arw{transform:rotate(-90deg)}
+.side .grp .gi{font-size:13px;opacity:.9}
+.side .grp .gn{margin-left:auto;font-size:10px;color:#5b6b91;font-weight:400}
+.side .mi.sub{padding:8px 14px 8px 26px;font-size:13.5px}
+.side .mi.sub .ic{font-size:14px}
+.side .mi.hidden{display:none}
+.side .mi .ct.cold{opacity:.45}
+.side .mi.loading .ct{background:#b45309;color:#fff}
 .side-empty{padding:14px;color:#94a3b8;font-size:12px;text-align:center}
 .main{flex:1;display:flex;flex-direction:column;min-width:0;background:#f5f7fb}
 .toolbar{flex:none;padding:10px 14px;border-bottom:1px solid #e5e7eb;background:#fff;display:flex;flex-direction:column;gap:8px}
@@ -146,11 +159,39 @@ a{color:inherit}
   #detail .calc-form input,#detail .calc-form select{font-size:16px;padding:12px 14px}
   #detail .calc-form .cchk{font-size:14px;margin:10px 0}
 }
+
+/* ---------- DRG ---------- */
+.drg-cards{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.drg-cards .dc{flex:1;min-width:108px;background:var(--brand-soft);border:1px solid #dbeafe;border-radius:10px;padding:10px 12px}
+.drg-cards .dc .k{font-size:11.5px;color:var(--muted)}
+.drg-cards .dc .v{font-size:19px;font-weight:700;color:var(--ink);margin-top:3px}
+.drg-cards .dc.hl{background:#fff7ed;border-color:#fed7aa}
+.drg-cards .dc.hl .v{color:#c2410c}
+.drg-pv{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.drg-pv select,.drg-pv input{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px}
+.drg-bar{position:relative;height:62px;margin:20px 0 10px}
+.drg-bar .track{position:absolute;top:20px;left:0;right:0;height:6px;background:linear-gradient(90deg,#86efac,#fde68a,#fca5a5);border-radius:3px}
+.drg-bar .mark{position:absolute;top:0;transform:translateX(-50%);text-align:center}
+.drg-bar .mark::after{content:"";display:block;width:2px;height:16px;margin:4px auto 0;background:var(--ink)}
+.drg-bar .mark span{display:inline-block;font-size:11px;white-space:nowrap;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1px 5px}
+.drg-bar .mark.be::after{background:#c2410c;height:22px}
+.drg-bar .mark.be span{border-color:#fed7aa;color:#c2410c}
+.drg-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.drg-tbl th{background:#f8fafc;color:var(--muted);font-weight:600;padding:7px 8px;border:1px solid var(--line);text-align:left}
+.drg-tbl td{padding:7px 8px;border:1px solid var(--line)}
+/* ---------- 生长曲线（内嵌「儿童生长曲线小程序」iframe，WS/T 423—2022） ---------- */
+body.mod-growth .toolbar{display:none}
+body.mod-growth .list{display:none}
+body.mod-growth .dback{display:none!important}
+body.mod-growth .detail{overflow:hidden}
+body.mod-growth #dbody{padding:0;height:100%}
+.gf-iframe{width:100%;height:100%;border:0;display:block;background:#eef2f7}
+
 </style>
 </head>
 <body>
 <div class="topbar">
-  <h1>临床工具</h1><span class="v">仅供参考yaohy2025</span>
+  <h1>临床工具</h1><span class="v">仅供参考</span>
   <div class="gswrap">
     <input id="gs" placeholder="跨模块检索（中文/拼音，如 xz / 肺炎）">
     <div class="gsbox" id="gsbox"></div>
@@ -173,25 +214,8 @@ a{color:inherit}
   </div>
 </div>
 <div class="toast" id="toast"></div>
-<script src="data/diseases.js"></script>
-<script src="data/drugs.js"></script>
-<script src="data/pump_drugs.js"></script>
-<script src="data/drug_skin.js"></script>
-<script src="data/drug_infu.js"></script>
-<script src="data/drug_emerg.js"></script>
-<script src="data/drug_abx.js"></script>
-<script src="data/drug_specpop.js"></script>
-<script src="data/drug_commondz.js"></script>
-<script src="data/drug_zyinj.js"></script>
-<script src="data/drug_derm.js"></script>
-<script src="data/drug_ophth.js"></script>
-<script src="data/labs.js"></script>
-<script src="data/symptoms.js"></script>
-<script src="data/procedures.js"></script>
-<script src="data/documents.js"></script>
-<script src="data/templates.js"></script>
-<script src="data/guidelines.js"></script>
-<script src="data/drugs_peds.js"></script>
+<script src="data/_small.js"></script>
+<script src="growth_src.js"></script>
 <script>
 const CALCS = [{"CalcId": "CALC-001", "CalcName": "BMI 体重指数", "Category": "通用", "Description": "根据身高体重计算体格指数，评估营养状态", "Formula": "{weight}/({height}*{height})", "InputParams": "[{\"name\":\"weight\",\"label\":\"体重\",\"unit\":\"kg\"},{\"name\":\"height\",\"label\":\"身高\",\"unit\":\"m\"}]", "ResultUnit": "kg/m²", "RefRange": "<18.5偏瘦 18.5-24正常 24-28超重 >28肥胖", "PinyinCode": "BTMZ", "PinyinFull": "bimtizhongzhishu"}, {"CalcId": "CALC-002", "CalcName": "体表面积 BSA", "Category": "通用", "Description": "Mosteller公式计算体表面积", "Formula": "sqrt({height}*{weight}/3600)", "InputParams": "[{\"name\":\"height\",\"label\":\"身高\",\"unit\":\"cm\"},{\"name\":\"weight\",\"label\":\"体重\",\"unit\":\"kg\"}]", "ResultUnit": "m²", "RefRange": "成人约1.5-2.0", "PinyinCode": "TBQMJ", "PinyinFull": "tibiaomiaojimi"}, {"CalcId": "CALC-003", "CalcName": "校正钙浓度", "Category": "通用", "Description": "根据血清白蛋白校正总钙浓度", "Formula": "{calcium}+0.8*(4.0-{albumin})", "InputParams": "[{\"name\":\"calcium\",\"label\":\"血清钙\",\"unit\":\"mmol/L\"},{\"name\":\"albumin\",\"label\":\"白蛋白\",\"unit\":\"g/dL\"}]", "ResultUnit": "mmol/L", "RefRange": "2.2-2.6", "PinyinCode": "JZGN", "PinyinFull": "jiaozhenggianongdu"}, {"CalcId": "CALC-004", "CalcName": "肌酐清除率 Cockcroft-Gault", "Category": "肾脏", "Description": "估算肌酐清除率，评估肾功能", "Formula": "((140-{age})*{weight})/(72*{creatinine})*{female}", "InputParams": "[{\"name\":\"age\",\"label\":\"年龄\",\"unit\":\"岁\"},{\"name\":\"weight\",\"label\":\"体重\",\"unit\":\"kg\"},{\"name\":\"creatinine\",\"label\":\"血肌酐\",\"unit\":\"mg/dL\"},{\"name\":\"female\",\"label\":\"性别\",\"unit\":\"男1/女0.85\"}]", "ResultUnit": "mL/min", "RefRange": "男85-125 女80-105", "PinyinCode": "JSCQ", "PinyinFull": "jiganqingchulu"}, {"CalcId": "CALC-005", "CalcName": "阴离子间隙", "Category": "通用", "Description": "评估酸碱失衡", "Formula": "{sodium}-{chloride}-{bicarbonate}", "InputParams": "[{\"name\":\"sodium\",\"label\":\"钠\",\"unit\":\"mmol/L\"},{\"name\":\"chloride\",\"label\":\"氯\",\"unit\":\"mmol/L\"},{\"name\":\"bicarbonate\",\"label\":\"碳酸氢根\",\"unit\":\"mmol/L\"}]", "ResultUnit": "mmol/L", "RefRange": "8-16", "PinyinCode": "LYXJ", "PinyinFull": "yilizijianxi"}, {"CalcId": "CALC-006", "CalcName": "平均动脉压 MAP", "Category": "心血管", "Description": "评估血流动力学", "Formula": "{dbp}+({sbp}-{dbp})/3", "InputParams": "[{\"name\":\"sbp\",\"label\":\"收缩压\",\"unit\":\"mmHg\"},{\"name\":\"dbp\",\"label\":\"舒张压\",\"unit\":\"mmHg\"}]", "ResultUnit": "mmHg", "RefRange": "70-105", "PinyinCode": "PJDM", "PinyinFull": "pingjundongmaiya"}, {"CalcId": "CALC-007", "CalcName": "基础代谢率 BMR", "Category": "通用", "Description": "Harris-Benedict公式(男性)", "Formula": "66.5+13.75*{weight}+5.003*{height}-6.775*{age}", "InputParams": "[{\"name\":\"weight\",\"label\":\"体重\",\"unit\":\"kg\"},{\"name\":\"height\",\"label\":\"身高\",\"unit\":\"cm\"},{\"name\":\"age\",\"label\":\"年龄\",\"unit\":\"岁\"}]", "ResultUnit": "kcal/d", "RefRange": "1600-2000", "PinyinCode": "JCDA", "PinyinFull": "jichudaixielu"}, {"CalcId": "CALC-008", "CalcName": "氧合指数", "Category": "呼吸", "Description": "PaO2/FiO2评估呼吸功能", "Formula": "{pao2}/{fio2}*100", "InputParams": "[{\"name\":\"pao2\",\"label\":\"PaO2\",\"unit\":\"mmHg\"},{\"name\":\"fio2\",\"label\":\"FiO2\",\"unit\":\"%\"}]", "ResultUnit": "mmHg", "RefRange": ">400正常 <300呼衰", "PinyinCode": "YHZS", "PinyinFull": "yanghezhishu"}, {"CalcId": "CALC-009", "CalcName": "BNI 脑钠肽前体比值", "Category": "心血管", "Description": "NT-proBNP/年龄校正值(>=50岁)", "Formula": "{ntprobnp}/({age}/50)", "InputParams": "[{\"name\":\"ntprobnp\",\"label\":\"NT-proBNP\",\"unit\":\"pg/mL\"},{\"name\":\"age\",\"label\":\"年龄\",\"unit\":\"岁\"}]", "ResultUnit": "", "RefRange": "<125正常", "PinyinCode": "BNP", "PinyinFull": "nnaonaitiqianzhibizhi"}, {"CalcId": "CALC-010", "CalcName": "GFR 估算(MDRD)", "Category": "肾脏", "Description": "MDRD公式估算肾小球滤过率", "Formula": "175*{creatinine}^(-1.154)*{age}^(-0.203)*{female}", "InputParams": "[{\"name\":\"creatinine\",\"label\":\"血肌酐\",\"unit\":\"mg/dL\"},{\"name\":\"age\",\"label\":\"年龄\",\"unit\":\"岁\"},{\"name\":\"female\",\"label\":\"性别\",\"unit\":\"男1/女0.742\"}]", "ResultUnit": "mL/min/1.73m²", "RefRange": ">90正常", "PinyinCode": "GFR", "PinyinFull": "gfr"}, {"CalcId": "CALC-011", "CalcName": "QTc 校正QT间期", "Category": "心血管", "Description": "Bazett公式校正QT间期", "Formula": "{qt}/sqrt({rr})", "InputParams": "[{\"name\":\"qt\",\"label\":\"QT间期\",\"unit\":\"ms\"},{\"name\":\"rr\",\"label\":\"RR间期\",\"unit\":\"s\"}]", "ResultUnit": "ms", "RefRange": "男<440 女<460", "PinyinCode": "QTc", "PinyinFull": "qtxiao"}, {"CalcId": "CALC-012", "CalcName": "补钠量", "Category": "通用", "Description": "缺钠性补钠估算(3%NaCl)", "Formula": "({target}-{sodium})*{weight}*0.6/51", "InputParams": "[{\"name\":\"sodium\",\"label\":\"实测钠\",\"unit\":\"mmol/L\"},{\"name\":\"target\",\"label\":\"目标钠\",\"unit\":\"mmol/L\"},{\"name\":\"weight\",\"label\":\"体重\",\"unit\":\"kg\"}]", "ResultUnit": "mL(3%NaCl)", "RefRange": "据缺钠程度定", "PinyinCode": "BNL", "PinyinFull": "bnaliang"}, {"CalcId": "CALC-013", "CalcName": "BMI 体格指数", "Category": "通用", "Description": "计算身体质量指数，用于评估体重状况。", "Formula": "{weight}/({height}*{height})", "InputParams": "[{\"name\": \"weight\", \"label\": \"体重\", \"unit\": \"kg\"}, {\"name\": \"height\", \"label\": \"身高\", \"unit\": \"m\"}]", "ResultUnit": "kg/m²", "RefRange": "18.5-24.9 正常，<18.5 偏瘦，≥25 超重，≥30 肥胖", "PinyinCode": "BMI TGZS", "PinyinFull": "BMI tigezhishu"}, {"CalcId": "CALC-014", "CalcName": "BSA 体表面积", "Category": "通用", "Description": "估算人体体表面积，用于药物剂量计算等。", "Formula": "sqrt(({height}*{weight})/3600)", "InputParams": "[{\"name\": \"height\", \"label\": \"身高\", \"unit\": \"cm\"}, {\"name\": \"weight\", \"label\": \"体重\", \"unit\": \"kg\"}]", "ResultUnit": "m²", "RefRange": "成人约1.6-1.8 m²", "PinyinCode": "BSA TBMJ", "PinyinFull": "BSA tibiaomianji"}, {"CalcId": "CALC-015", "CalcName": "BMR 基础代谢率", "Category": "通用", "Description": "估算基础代谢率，即静息状态下每日能量消耗。", "Formula": "10*{weight}+6.25*{height}-5*{age}+{gender}", "InputParams": "[{\"name\": \"weight\", \"label\": \"体重\", \"unit\": \"kg\"}, {\"name\": \"height\", \"label\": \"身高\", \"unit\": \"cm\"}, {\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"岁\"}, {\"name\": \"gender\", \"label\": \"性别系数\", \"unit\": \"男+5，女-161\"}]", "ResultUnit": "kcal/day", "RefRange": "随年龄、性别、体型而异", "PinyinCode": "BMR JCDXL", "PinyinFull": "BMR jichudaixielv"}, {"CalcId": "CALC-016", "CalcName": "GFR 估算 MDRD", "Category": "肾脏", "Description": "使用MDRD公式估算肾小球滤过率。", "Formula": "175*({creatinine}^-1.154)*({age}^-0.203)*{gender}*{race}", "InputParams": "[{\"name\": \"creatinine\", \"label\": \"血肌酐\", \"unit\": \"mg/dL\"}, {\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"岁\"}, {\"name\": \"gender\", \"label\": \"性别系数\", \"unit\": \"男1，女0.742\"}, {\"name\": \"race\", \"label\": \"种族系数\", \"unit\": \"黑人1.212，其他1\"}]", "ResultUnit": "mL/min/1.73m²", "RefRange": "≥90 正常，60-89 轻度下降，30-59 中度，15-29 重度，<15 肾衰竭", "PinyinCode": "GFR GS MDRD", "PinyinFull": "GFR gusuan MDRD"}, {"CalcId": "CALC-017", "CalcName": "GFR 估算 CKD-EPI", "Category": "肾脏", "Description": "使用CKD-EPI公式估算肾小球滤过率，更准确。", "Formula": "141*min({creatinine}/{kappa},1)^alpha*max({creatinine}/{kappa},1)^(-1.209)*0.993^{age}*{gender}*{race}", "InputParams": "[{\"name\": \"creatinine\", \"label\": \"血肌酐\", \"unit\": \"mg/dL\"}, {\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"岁\"}, {\"name\": \"gender\", \"label\": \"性别系数\", \"unit\": \"男1，女1.018\"}, {\"name\": \"race\", \"label\": \"种族系数\", \"unit\": \"黑人1.159，其他1\"}, {\"name\": \"kappa\", \"label\": \"κ值\", \"unit\": \"男0.9，女0.7\"}, {\"name\": \"alpha\", \"label\": \"α值\", \"unit\": \"男-0.411，女-0.329\"}]", "ResultUnit": "mL/min/1.73m²", "RefRange": "≥90 正常，60-89 轻度下降，30-59 中度，15-29 重度，<15 肾衰竭", "PinyinCode": "GFR GS CKD-EPI", "PinyinFull": "GFR gusuan CKD-EPI"}, {"CalcId": "CALC-018", "CalcName": "MAP 平均动脉压", "Category": "心血管", "Description": "计算平均动脉压，反映器官灌注压力。", "Formula": "{sbp}+2*{dbp}/3", "InputParams": "[{\"name\": \"sbp\", \"label\": \"收缩压\", \"unit\": \"mmHg\"}, {\"name\": \"dbp\", \"label\": \"舒张压\", \"unit\": \"mmHg\"}]", "ResultUnit": "mmHg", "RefRange": "70-105 mmHg", "PinyinCode": "MAP PJDMY", "PinyinFull": "MAP pingjundongmaiya"}, {"CalcId": "CALC-019", "CalcName": "QTc 校正 QT 间期", "Category": "心血管", "Description": "使用Bazett公式校正心率对QT间期的影响。", "Formula": "{qt}/sqrt({rr})", "InputParams": "[{\"name\": \"qt\", \"label\": \"QT间期\", \"unit\": \"秒\"}, {\"name\": \"rr\", \"label\": \"RR间期\", \"unit\": \"秒\"}]", "ResultUnit": "秒", "RefRange": "男性<0.45s，女性<0.46s，延长有风险", "PinyinCode": "QTC JZ QT JQ", "PinyinFull": "QTc jiaozheng QT jianqi"}, {"CalcId": "CALC-020", "CalcName": "心输出量 Fick", "Category": "心血管", "Description": "根据Fick原理计算心输出量。", "Formula": "{vo2}/({ca}-{cv})", "InputParams": "[{\"name\": \"vo2\", \"label\": \"氧耗量\", \"unit\": \"mL/min\"}, {\"name\": \"ca\", \"label\": \"动脉血氧含量\", \"unit\": \"mL/dL\"}, {\"name\": \"cv\", \"label\": \"混合静脉血氧含量\", \"unit\": \"mL/dL\"}]", "ResultUnit": "L/min", "RefRange": "4-8 L/min", "PinyinCode": "XSCL FICK", "PinyinFull": "xinshuchuliang Fick"}, {"CalcId": "CALC-021", "CalcName": "氧合指数 PaO2/FiO2", "Category": "呼吸", "Description": "评估氧合功能，用于ARDS诊断。", "Formula": "{pao2}/{fio2}", "InputParams": "[{\"name\": \"pao2\", \"label\": \"动脉血氧分压\", \"unit\": \"mmHg\"}, {\"name\": \"fio2\", \"label\": \"吸入氧浓度\", \"unit\": \"小数，如0.21\"}]", "ResultUnit": "mmHg", "RefRange": "≥300 正常，<300 提示肺损伤，<200 ARDS", "PinyinCode": "YHZS PAO2/FIO2", "PinyinFull": "yanghezhishu PaO2/FiO2"}, {"CalcId": "CALC-022", "CalcName": "A-aDO2 肺泡动脉氧分压差", "Category": "呼吸", "Description": "计算肺泡-动脉氧分压差，评估换气功能。", "Formula": "(713*{fio2})-({pao2}+{paco2}/0.8)", "InputParams": "[{\"name\": \"fio2\", \"label\": \"吸入氧浓度\", \"unit\": \"小数，如0.21\"}, {\"name\": \"pao2\", \"label\": \"动脉血氧分压\", \"unit\": \"mmHg\"}, {\"name\": \"paco2\", \"label\": \"动脉血二氧化碳分压\", \"unit\": \"mmHg\"}]", "ResultUnit": "mmHg", "RefRange": "吸空气时<15 mmHg，随年龄增加", "PinyinCode": "A-ADO2 FPDMYFYC", "PinyinFull": "A-aDO2 feipaodongmaiyangfenyacha"}, {"CalcId": "CALC-023", "CalcName": "补钠量公式", "Category": "水电解质", "Description": "计算低钠血症所需补钠量。", "Formula": "(140-{na})*{weight}*0.6", "InputParams": "[{\"name\": \"na\", \"label\": \"当前血钠\", \"unit\": \"mmol/L\"}, {\"name\": \"weight\", \"label\": \"体重\", \"unit\": \"kg\"}]", "ResultUnit": "mmol", "RefRange": "按需补充，注意速度", "PinyinCode": "BNLGS", "PinyinFull": "bunalianggongshi"}, {"CalcId": "CALC-024", "CalcName": "Child-Pugh 评分", "Category": "消化", "Description": "评估肝硬化严重程度及预后。", "Formula": "{bilirubin}+{albumin}+{pt}+{ascites}+{encephalopathy}", "InputParams": "[{\"name\": \"bilirubin\", \"label\": \"胆红素评分\", \"unit\": \"分\"}, {\"name\": \"albumin\", \"label\": \"白蛋白评分\", \"unit\": \"分\"}, {\"name\": \"pt\", \"label\": \"凝血酶原时间评分\", \"unit\": \"分\"}, {\"name\": \"ascites\", \"label\": \"腹水评分\", \"unit\": \"分\"}, {\"name\": \"encephalopathy\", \"label\": \"肝性脑病评分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "5-6 A级，7-9 B级，10-15 C级", "PinyinCode": "CHILD-PUGH PF", "PinyinFull": "Child-Pugh pingfen"}, {"CalcId": "CALC-025", "CalcName": "APACHE II 评分", "Category": "评分", "Description": "急性生理与慢性健康评分，评估ICU患者病情严重度。", "Formula": "{aps}+{age}+{chronic}", "InputParams": "[{\"name\": \"aps\", \"label\": \"急性生理评分\", \"unit\": \"分\"}, {\"name\": \"age\", \"label\": \"年龄评分\", \"unit\": \"分\"}, {\"name\": \"chronic\", \"label\": \"慢性健康评分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-71分，越高越严重", "PinyinCode": "APACHE II PF", "PinyinFull": "APACHE II pingfen"}, {"CalcId": "CALC-026", "CalcName": "Glasgow 昏迷评分", "Category": "评分", "Description": "评估意识障碍程度。", "Formula": "{eye}+{verbal}+{motor}", "InputParams": "[{\"name\": \"eye\", \"label\": \"睁眼反应\", \"unit\": \"分\"}, {\"name\": \"verbal\", \"label\": \"语言反应\", \"unit\": \"分\"}, {\"name\": \"motor\", \"label\": \"运动反应\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "3-15分，≤8分昏迷", "PinyinCode": "GLASGOW HMPF", "PinyinFull": "Glasgow hunmipingfen"}, {"CalcId": "CALC-027", "CalcName": "TIMI 评分", "Category": "评分", "Description": "评估不稳定型心绞痛/非ST段抬高心梗的死亡风险。", "Formula": "{age}+{risk}+{stenosis}+{ecg}+{angina}+{aspirin}+{marker}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄≥65岁\", \"unit\": \"1/0\"}, {\"name\": \"risk\", \"label\": \"≥3个冠心病危险因素\", \"unit\": \"1/0\"}, {\"name\": \"stenosis\", \"label\": \"冠脉狭窄≥50%\", \"unit\": \"1/0\"}, {\"name\": \"ecg\", \"label\": \"ST段偏移\", \"unit\": \"1/0\"}, {\"name\": \"angina\", \"label\": \"24h内≥2次心绞痛\", \"unit\": \"1/0\"}, {\"name\": \"aspirin\", \"label\": \"7天内使用阿司匹林\", \"unit\": \"1/0\"}, {\"name\": \"marker\", \"label\": \"心肌标志物升高\", \"unit\": \"1/0\"}]", "ResultUnit": "分", "RefRange": "0-7分，0-2低危，3-4中危，5-7高危", "PinyinCode": "TIMI PF", "PinyinFull": "TIMI pingfen"}, {"CalcId": "CALC-028", "CalcName": "CHADS2 评分", "Category": "评分", "Description": "评估非瓣膜性房颤患者卒中风险。", "Formula": "{chf}+{hypertension}+{age}+{diabetes}+{stroke}", "InputParams": "[{\"name\": \"chf\", \"label\": \"充血性心衰\", \"unit\": \"1/0\"}, {\"name\": \"hypertension\", \"label\": \"高血压\", \"unit\": \"1/0\"}, {\"name\": \"age\", \"label\": \"年龄≥75岁\", \"unit\": \"1/0\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病\", \"unit\": \"1/0\"}, {\"name\": \"stroke\", \"label\": \"卒中/TIA史\", \"unit\": \"2/0\"}]", "ResultUnit": "分", "RefRange": "0-6分，0低危，1中危，≥2高危", "PinyinCode": "CHADS2 PF", "PinyinFull": "CHADS2 pingfen"}, {"CalcId": "CALC-029", "CalcName": "CHADS2-VASc 评分", "Category": "评分", "Description": "更全面的房颤卒中风险评估。", "Formula": "{chf}+{hypertension}+{age65}+{diabetes}+{stroke}+{vascular}+{age75}+{sex}", "InputParams": "[{\"name\": \"chf\", \"label\": \"充血性心衰\", \"unit\": \"1/0\"}, {\"name\": \"hypertension\", \"label\": \"高血压\", \"unit\": \"1/0\"}, {\"name\": \"age65\", \"label\": \"年龄65-74岁\", \"unit\": \"1/0\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病\", \"unit\": \"1/0\"}, {\"name\": \"stroke\", \"label\": \"卒中/TIA史\", \"unit\": \"2/0\"}, {\"name\": \"vascular\", \"label\": \"血管疾病\", \"unit\": \"1/0\"}, {\"name\": \"age75\", \"label\": \"年龄≥75岁\", \"unit\": \"2/0\"}, {\"name\": \"sex\", \"label\": \"女性\", \"unit\": \"1/0\"}]", "ResultUnit": "分", "RefRange": "0-9分，0低危，≥2需抗凝", "PinyinCode": "CHADS2-VASC PF", "PinyinFull": "CHADS2-VASc pingfen"}, {"CalcId": "CALC-030", "CalcName": "SOFA 评分", "Category": "评分", "Description": "评估脓毒症患者器官功能障碍程度。", "Formula": "{resp}+{coag}+{liver}+{cardio}+{neuro}+{renal}", "InputParams": "[{\"name\": \"resp\", \"label\": \"呼吸系统评分\", \"unit\": \"分\"}, {\"name\": \"coag\", \"label\": \"凝血系统评分\", \"unit\": \"分\"}, {\"name\": \"liver\", \"label\": \"肝脏评分\", \"unit\": \"分\"}, {\"name\": \"cardio\", \"label\": \"心血管评分\", \"unit\": \"分\"}, {\"name\": \"neuro\", \"label\": \"神经评分\", \"unit\": \"分\"}, {\"name\": \"renal\", \"label\": \"肾脏评分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-24分，越高越严重", "PinyinCode": "SOFA PF", "PinyinFull": "SOFA pingfen"}, {"CalcId": "CALC-031", "CalcName": "qSOFA 评分", "Category": "评分", "Description": "床旁快速筛查脓毒症。", "Formula": "{rr}+{sbp}+{mental}", "InputParams": "[{\"name\": \"rr\", \"label\": \"呼吸频率≥22次/分\", \"unit\": \"1/0\"}, {\"name\": \"sbp\", \"label\": \"收缩压≤100mmHg\", \"unit\": \"1/0\"}, {\"name\": \"mental\", \"label\": \"意识改变\", \"unit\": \"1/0\"}]", "ResultUnit": "分", "RefRange": "0-3分，≥2分提示脓毒症风险", "PinyinCode": "QSOFA PF", "PinyinFull": "qSOFA pingfen"}, {"CalcId": "CALC-032", "CalcName": "Caprini 血栓风险评分", "Category": "评分", "Description": "评估静脉血栓栓塞风险。", "Formula": "{age}+{bmi}+{surgery}+{trauma}+{cancer}+{other}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄评分\", \"unit\": \"分\"}, {\"name\": \"bmi\", \"label\": \"BMI评分\", \"unit\": \"分\"}, {\"name\": \"surgery\", \"label\": \"手术评分\", \"unit\": \"分\"}, {\"name\": \"trauma\", \"label\": \"创伤评分\", \"unit\": \"分\"}, {\"name\": \"cancer\", \"label\": \"癌症评分\", \"unit\": \"分\"}, {\"name\": \"other\", \"label\": \"其他风险评分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-1低危，2中危，3-4高危，≥5极高危", "PinyinCode": "CAPRINI XSFXPF", "PinyinFull": "Caprini xueshuanfengxianpingfen"}, {"CalcId": "CALC-033", "CalcName": "ABCD2 评分", "Category": "评分", "Description": "用于评估短暂性脑缺血发作（TIA）后早期卒中风险，总分0-7分。", "Formula": "{age}+{bp}+{clinical}+{duration}+{diabetes}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄≥60岁\", \"unit\": \"是=1，否=0\"}, {\"name\": \"bp\", \"label\": \"血压≥140/90 mmHg\", \"unit\": \"是=1，否=0\"}, {\"name\": \"clinical\", \"label\": \"临床表现\", \"unit\": \"单侧无力=2，言语障碍不伴无力=1，其他=0\"}, {\"name\": \"duration\", \"label\": \"症状持续时间\", \"unit\": \"≥60分钟=2，10-59分钟=1，<10分钟=0\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "0-3低危，4-5中危，6-7高危", "PinyinCode": "ABCD2 PF", "PinyinFull": "ABCD2 pingfen"}, {"CalcId": "CALC-034", "CalcName": "Ottawa 踝规则", "Category": "骨科", "Description": "用于踝关节损伤后是否需要X线检查的决策规则，降低不必要的放射暴露。", "Formula": "{malleolar_tenderness}+{bone_tenderness}+{inability_weight_bearing}", "InputParams": "[{\"name\": \"malleolar_tenderness\", \"label\": \"外踝或内踝骨性压痛\", \"unit\": \"有=1，无=0\"}, {\"name\": \"bone_tenderness\", \"label\": \"足舟骨或第五跖骨基底压痛\", \"unit\": \"有=1，无=0\"}, {\"name\": \"inability_weight_bearing\", \"label\": \"受伤后立即及急诊时不能负重行走4步\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "", "RefRange": "任一阳性则建议X线检查", "PinyinCode": "OTTAWA HGZ", "PinyinFull": "Ottawa huaiguize"}, {"CalcId": "CALC-035", "CalcName": "Ottawa 膝规则", "Category": "骨科", "Description": "用于膝关节损伤后是否需要X线检查的决策规则，减少不必要的影像检查。", "Formula": "{age}+{tenderness_patella}+{tenderness_fibula}+{inability_flex}+{inability_weight_bearing}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄≥55岁\", \"unit\": \"是=1，否=0\"}, {\"name\": \"tenderness_patella\", \"label\": \"髌骨压痛（无骨性畸形）\", \"unit\": \"有=1，无=0\"}, {\"name\": \"tenderness_fibula\", \"label\": \"腓骨头压痛\", \"unit\": \"有=1，无=0\"}, {\"name\": \"inability_flex\", \"label\": \"膝关节不能屈曲至90°\", \"unit\": \"是=1，否=0\"}, {\"name\": \"inability_weight_bearing\", \"label\": \"受伤后立即及急诊时不能负重行走4步\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "", "RefRange": "任一阳性则建议X线检查", "PinyinCode": "OTTAWA XGZ", "PinyinFull": "Ottawa xiguize"}, {"CalcId": "CALC-036", "CalcName": "PERC 规则", "Category": "呼吸", "Description": "肺栓塞排除标准，用于低风险患者排除肺栓塞，避免不必要的D-二聚体检查。", "Formula": "{age}+{hr}+{o2sat}+{hemoptysis}+{estrogen}+{surgery}+{prior_dvt_pe}+{unilateral_leg_swelling}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄<50岁\", \"unit\": \"是=0，否=1\"}, {\"name\": \"hr\", \"label\": \"心率<100次/分\", \"unit\": \"是=0，否=1\"}, {\"name\": \"o2sat\", \"label\": \"血氧饱和度≥94%\", \"unit\": \"是=0，否=1\"}, {\"name\": \"hemoptysis\", \"label\": \"无咯血\", \"unit\": \"是=0，否=1\"}, {\"name\": \"estrogen\", \"label\": \"未使用雌激素\", \"unit\": \"是=0，否=1\"}, {\"name\": \"surgery\", \"label\": \"无近期手术或创伤\", \"unit\": \"是=0，否=1\"}, {\"name\": \"prior_dvt_pe\", \"label\": \"无既往DVT或PE史\", \"unit\": \"是=0，否=1\"}, {\"name\": \"unilateral_leg_swelling\", \"label\": \"无单侧下肢肿胀\", \"unit\": \"是=0，否=1\"}]", "ResultUnit": "", "RefRange": "所有条件均满足（总分为0）则排除PE", "PinyinCode": "PERC GZ", "PinyinFull": "PERC guize"}, {"CalcId": "CALC-037", "CalcName": "Pulmonary Embolism Rule-Out Criteria", "Category": "呼吸", "Description": "肺栓塞排除标准，与PERC规则相同，用于低风险患者排除肺栓塞。", "Formula": "{age}+{hr}+{o2sat}+{hemoptysis}+{estrogen}+{surgery}+{prior_dvt_pe}+{unilateral_leg_swelling}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄<50岁\", \"unit\": \"是=0，否=1\"}, {\"name\": \"hr\", \"label\": \"心率<100次/分\", \"unit\": \"是=0，否=1\"}, {\"name\": \"o2sat\", \"label\": \"血氧饱和度≥94%\", \"unit\": \"是=0，否=1\"}, {\"name\": \"hemoptysis\", \"label\": \"无咯血\", \"unit\": \"是=0，否=1\"}, {\"name\": \"estrogen\", \"label\": \"未使用雌激素\", \"unit\": \"是=0，否=1\"}, {\"name\": \"surgery\", \"label\": \"无近期手术或创伤\", \"unit\": \"是=0，否=1\"}, {\"name\": \"prior_dvt_pe\", \"label\": \"无既往DVT或PE史\", \"unit\": \"是=0，否=1\"}, {\"name\": \"unilateral_leg_swelling\", \"label\": \"无单侧下肢肿胀\", \"unit\": \"是=0，否=1\"}]", "ResultUnit": "", "RefRange": "所有条件均满足（总分为0）则排除PE", "PinyinCode": "PULMONARY EMBOLISM RULE-OUT CRITERIA", "PinyinFull": "Pulmonary Embolism Rule-Out Criteria"}, {"CalcId": "CALC-038", "CalcName": "PADUA 静脉血栓栓塞风险", "Category": "评分", "Description": "用于评估内科住院患者静脉血栓栓塞（VTE）风险，指导预防性抗凝治疗。", "Formula": "{cancer}+{vte_history}+{reduced_mobility}+{thrombophilia}+{trauma_surgery}+{age}+{heart_resp_failure}+{ami_stroke}+{infection_rheumatic}+{obesity}+{hormonal}", "InputParams": "[{\"name\": \"cancer\", \"label\": \"活动性癌症\", \"unit\": \"是=3，否=0\"}, {\"name\": \"vte_history\", \"label\": \"既往VTE史（除外浅表血栓）\", \"unit\": \"是=3，否=0\"}, {\"name\": \"reduced_mobility\", \"label\": \"活动减少（卧床≥3天）\", \"unit\": \"是=3，否=0\"}, {\"name\": \"thrombophilia\", \"label\": \"已知血栓形成倾向\", \"unit\": \"是=3，否=0\"}, {\"name\": \"trauma_surgery\", \"label\": \"近期（≤1个月）创伤或手术\", \"unit\": \"是=2，否=0\"}, {\"name\": \"age\", \"label\": \"年龄≥70岁\", \"unit\": \"是=1，否=0\"}, {\"name\": \"heart_resp_failure\", \"label\": \"心力衰竭和/或呼吸衰竭\", \"unit\": \"是=1，否=0\"}, {\"name\": \"ami_stroke\", \"label\": \"急性心肌梗死和/或缺血性卒中\", \"unit\": \"是=1，否=0\"}, {\"name\": \"infection_rheumatic\", \"label\": \"急性感染和/或风湿性疾病\", \"unit\": \"是=1，否=0\"}, {\"name\": \"obesity\", \"label\": \"肥胖（BMI≥30）\", \"unit\": \"是=1，否=0\"}, {\"name\": \"hormonal\", \"label\": \"正在进行激素治疗\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "≥4分高危，建议预防性抗凝", "PinyinCode": "PADUA JMXSSSFX", "PinyinFull": "PADUA jingmaixueshuanshuansefengxian"}, {"CalcId": "CALC-039", "CalcName": "Khorana 评分", "Category": "评分", "Description": "用于评估门诊化疗患者静脉血栓栓塞风险，指导血栓预防。", "Formula": "{cancer_site}+{platelet}+{hemoglobin}+{leukocyte}+{bmi}", "InputParams": "[{\"name\": \"cancer_site\", \"label\": \"原发肿瘤部位\", \"unit\": \"胃/胰腺=2，肺/淋巴/妇科/膀胱/睾丸=1，其他=0\"}, {\"name\": \"platelet\", \"label\": \"血小板计数≥350×10^9/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"hemoglobin\", \"label\": \"血红蛋白<100 g/L或使用促红细胞生成素\", \"unit\": \"是=1，否=0\"}, {\"name\": \"leukocyte\", \"label\": \"白细胞计数>11×10^9/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"bmi\", \"label\": \"BMI≥35 kg/m²\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "≥3分高危，建议预防性抗凝", "PinyinCode": "KHORANA PF", "PinyinFull": "Khorana pingfen"}, {"CalcId": "CALC-040", "CalcName": "Geneva 评分", "Category": "评分", "Description": "用于评估肺栓塞的临床概率，简化版基于临床因素和客观指标。", "Formula": "{age}+{prior_dvt_pe}+{surgery}+{heart_rate}+{hemoptysis}+{cancer}+{unilateral_leg_pain}+{leg_swelling}+{hypoxemia}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄>65岁\", \"unit\": \"是=1，否=0\"}, {\"name\": \"prior_dvt_pe\", \"label\": \"既往DVT或PE史\", \"unit\": \"是=3，否=0\"}, {\"name\": \"surgery\", \"label\": \"近期手术或骨折（≤1个月）\", \"unit\": \"是=2，否=0\"}, {\"name\": \"heart_rate\", \"label\": \"心率75-94次/分\", \"unit\": \"是=3，否=0\"}, {\"name\": \"hemoptysis\", \"label\": \"咯血\", \"unit\": \"是=2，否=0\"}, {\"name\": \"cancer\", \"label\": \"活动性癌症\", \"unit\": \"是=2，否=0\"}, {\"name\": \"unilateral_leg_pain\", \"label\": \"单侧下肢疼痛\", \"unit\": \"是=3，否=0\"}, {\"name\": \"leg_swelling\", \"label\": \"单侧下肢深静脉触痛和单侧水肿\", \"unit\": \"是=4，否=0\"}, {\"name\": \"hypoxemia\", \"label\": \"动脉血氧分压<60 mmHg或呼吸频率>25次/分\", \"unit\": \"是=3，否=0\"}]", "ResultUnit": "分", "RefRange": "0-3低度可能，4-10中度可能，≥11高度可能", "PinyinCode": "GENEVA PF", "PinyinFull": "Geneva pingfen"}, {"CalcId": "CALC-041", "CalcName": "Barcelona Clinic Liver Cancer (BCLC) 分期", "Category": "消化", "Description": "用于肝细胞癌的分期和治疗方案选择，结合肿瘤负荷、肝功能、体力状况。", "Formula": "{stage}", "InputParams": "[{\"name\": \"stage\", \"label\": \"BCLC分期\", \"unit\": \"0/A/B/C/D\"}]", "ResultUnit": "", "RefRange": "0：极早期；A：早期；B：中期；C：晚期；D：终末期", "PinyinCode": "BARCELONA CLINIC LIVER CANCER (BCLC) FQ", "PinyinFull": "Barcelona Clinic Liver Cancer (BCLC) fenqi"}, {"CalcId": "CALC-042", "CalcName": "Model for End-Stage Liver Disease-Na (MELD-Na)", "Category": "消化", "Description": "用于评估终末期肝病严重程度和预后，指导肝移植分配。", "Formula": "{meld}+1.32*(137-{sodium})-0.033*{meld}*(137-{sodium})", "InputParams": "[{\"name\": \"meld\", \"label\": \"MELD评分（不含钠）\", \"unit\": \"分\"}, {\"name\": \"sodium\", \"label\": \"血清钠\", \"unit\": \"mmol/L\"}]", "ResultUnit": "分", "RefRange": "分数越高，病情越重，>15分需考虑移植", "PinyinCode": "MODEL FOR END-STAGE LIVER DISEASE-NA (MELD-NA)", "PinyinFull": "Model for End-Stage Liver Disease-Na (MELD-Na)"}, {"CalcId": "CALC-043", "CalcName": "UKELD 评分", "Category": "消化", "Description": "英国终末期肝病评分，用于肝移植等待名单的优先级评估。", "Formula": "5.395+1.485*ln({bilirubin})+1.06*ln({creatinine})+0.857*ln({inr})+0.3*ln({sodium})", "InputParams": "[{\"name\": \"bilirubin\", \"label\": \"总胆红素\", \"unit\": \"μmol/L\"}, {\"name\": \"creatinine\", \"label\": \"肌酐\", \"unit\": \"μmol/L\"}, {\"name\": \"inr\", \"label\": \"国际标准化比值\", \"unit\": \"\"}, {\"name\": \"sodium\", \"label\": \"血清钠\", \"unit\": \"mmol/L\"}]", "ResultUnit": "分", "RefRange": "≥49分提示预后不良，需考虑移植", "PinyinCode": "UKELD PF", "PinyinFull": "UKELD pingfen"}, {"CalcId": "CALC-044", "CalcName": "CLIF-C OF 评分", "Category": "消化", "Description": "用于评估慢加急性肝衰竭（ACLF）的器官衰竭严重程度。", "Formula": "{liver}+{kidney}+{brain}+{coagulation}+{circulation}+{lung}", "InputParams": "[{\"name\": \"liver\", \"label\": \"肝脏（胆红素）\", \"unit\": \"<6 mg/dL=1，6-12=2，≥12=3\"}, {\"name\": \"kidney\", \"label\": \"肾脏（肌酐）\", \"unit\": \"<2 mg/dL=1，2-3.5=2，≥3.5或透析=3\"}, {\"name\": \"brain\", \"label\": \"脑（肝性脑病分级）\", \"unit\": \"0-1级=1，2级=2，3-4级=3\"}, {\"name\": \"coagulation\", \"label\": \"凝血（INR）\", \"unit\": \"<2.5=1，2.5-3.5=2，≥3.5=3\"}, {\"name\": \"circulation\", \"label\": \"循环（平均动脉压或血管活性药）\", \"unit\": \"MAP≥70=1，MAP<70或使用血管活性药=2，使用两种以上=3\"}, {\"name\": \"lung\", \"label\": \"肺（PaO2/FiO2或SpO2/FiO2）\", \"unit\": \">300或>357=1，≤300或≤357=2，≤200或≤214=3\"}]", "ResultUnit": "分", "RefRange": "总分越高，器官衰竭越严重", "PinyinCode": "CLIF-C OF PF", "PinyinFull": "CLIF-C OF pingfen"}, {"CalcId": "CALC-045", "CalcName": "FIB-4 指数", "Category": "消化", "Description": "用于评估肝纤维化程度，尤其适用于非酒精性脂肪肝和丙型肝炎。", "Formula": "({age}*{ast})/({platelet}*sqrt({alt}))", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"岁\"}, {\"name\": \"ast\", \"label\": \"天冬氨酸氨基转移酶\", \"unit\": \"U/L\"}, {\"name\": \"platelet\", \"label\": \"血小板计数\", \"unit\": \"×10^9/L\"}, {\"name\": \"alt\", \"label\": \"丙氨酸氨基转移酶\", \"unit\": \"U/L\"}]", "ResultUnit": "", "RefRange": "<1.45排除晚期纤维化，>3.25提示晚期纤维化", "PinyinCode": "FIB-4 ZS", "PinyinFull": "FIB-4 zhishu"}, {"CalcId": "CALC-046", "CalcName": "APRI 指数", "Category": "消化", "Description": "用于评估肝纤维化和肝硬化，基于AST和血小板计数。", "Formula": "({ast}/{uln})/{platelet}*100", "InputParams": "[{\"name\": \"ast\", \"label\": \"天冬氨酸氨基转移酶\", \"unit\": \"U/L\"}, {\"name\": \"uln\", \"label\": \"AST正常值上限\", \"unit\": \"U/L\"}, {\"name\": \"platelet\", \"label\": \"血小板计数\", \"unit\": \"×10^9/L\"}]", "ResultUnit": "", "RefRange": "<0.5排除肝硬化，>1.5提示肝硬化", "PinyinCode": "APRI ZS", "PinyinFull": "APRI zhishu"}, {"CalcId": "CALC-047", "CalcName": "NFS 非酒精性脂肪肝纤维化评分", "Category": "消化", "Description": "用于非酒精性脂肪肝病（NAFLD）患者晚期纤维化的风险评估。", "Formula": "-1.675+0.037*{age}+0.094*{bmi}+1.13*{diabetes}+0.99*{ast_alt}-0.013*{platelet}-0.66*{albumin}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"岁\"}, {\"name\": \"bmi\", \"label\": \"体质指数\", \"unit\": \"kg/m²\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病或空腹血糖受损\", \"unit\": \"是=1，否=0\"}, {\"name\": \"ast_alt\", \"label\": \"AST/ALT比值\", \"unit\": \"\"}, {\"name\": \"platelet\", \"label\": \"血小板计数\", \"unit\": \"×10^9/L\"}, {\"name\": \"albumin\", \"label\": \"白蛋白\", \"unit\": \"g/dL\"}]", "ResultUnit": "", "RefRange": "<-1.455排除晚期纤维化，>0.676提示晚期纤维化", "PinyinCode": "NFS FJJXZFGXWHPF", "PinyinFull": "NFS feijiujingxingzhifangganxianweihuapingfen"}, {"CalcId": "CALC-048", "CalcName": "HOMA-IR 胰岛素抵抗指数", "Category": "内分泌", "Description": "用于评估胰岛素抵抗，基于空腹血糖和空腹胰岛素。", "Formula": "({fasting_insulin}*{fasting_glucose})/22.5", "InputParams": "[{\"name\": \"fasting_insulin\", \"label\": \"空腹胰岛素\", \"unit\": \"μU/mL\"}, {\"name\": \"fasting_glucose\", \"label\": \"空腹血糖\", \"unit\": \"mmol/L\"}]", "ResultUnit": "", "RefRange": "<2.0正常，2.0-2.8轻度，>2.8明显胰岛素抵抗", "PinyinCode": "HOMA-IR YDSDKZS", "PinyinFull": "HOMA-IR yidaosudikangzhishu"}, {"CalcId": "CALC-049", "CalcName": "QUICKI 指数", "Category": "内分泌", "Description": "定量胰岛素敏感性检测指数，用于评估胰岛素敏感性。", "Formula": "1/(log10({fasting_insulin})+log10({fasting_glucose}))", "InputParams": "[{\"name\": \"fasting_insulin\", \"label\": \"空腹胰岛素\", \"unit\": \"μU/mL\"}, {\"name\": \"fasting_glucose\", \"label\": \"空腹血糖\", \"unit\": \"mg/dL\"}]", "ResultUnit": "", "RefRange": ">0.45正常，<0.45提示胰岛素抵抗", "PinyinCode": "QUICKI ZS", "PinyinFull": "QUICKI zhishu"}, {"CalcId": "CALC-050", "CalcName": "Homeostasis model assessment", "Category": "内分泌", "Description": "稳态模型评估，包括HOMA-IR和HOMA-β，用于评估胰岛素抵抗和β细胞功能。", "Formula": "{homa_ir}+{homa_beta}", "InputParams": "[{\"name\": \"homa_ir\", \"label\": \"HOMA-IR值\", \"unit\": \"\"}, {\"name\": \"homa_beta\", \"label\": \"HOMA-β值\", \"unit\": \"\"}]", "ResultUnit": "", "RefRange": "HOMA-IR<2.0正常，HOMA-β>40%正常", "PinyinCode": "HOMEOSTASIS MODEL ASSESSMENT", "PinyinFull": "Homeostasis model assessment"}, {"CalcId": "CALC-051", "CalcName": "C-peptide 校正公式", "Category": "内分泌", "Description": "校正C肽水平，用于评估胰岛素分泌功能，考虑血糖影响。", "Formula": "{c_peptide}*1000/{glucose}", "InputParams": "[{\"name\": \"c_peptide\", \"label\": \"C肽\", \"unit\": \"ng/mL\"}, {\"name\": \"glucose\", \"label\": \"血糖\", \"unit\": \"mg/dL\"}]", "ResultUnit": "", "RefRange": "比值<0.2提示1型糖尿病，>0.2提示2型糖尿病可能", "PinyinCode": "C-PEPTIDE JZGS", "PinyinFull": "C-peptide jiaozhenggongshi"}, {"CalcId": "CALC-052", "CalcName": "胰岛素敏感性指数", "Category": "内分泌", "Description": "用于评估胰岛素敏感性，基于空腹血糖和空腹胰岛素。", "Formula": "1/({fasting_insulin}*{fasting_glucose})", "InputParams": "[{\"name\": \"fasting_insulin\", \"label\": \"空腹胰岛素\", \"unit\": \"μU/mL\"}, {\"name\": \"fasting_glucose\", \"label\": \"空腹血糖\", \"unit\": \"mmol/L\"}]", "ResultUnit": "", "RefRange": "数值越高，胰岛素敏感性越好", "PinyinCode": "YDSMGXZS", "PinyinFull": "yidaosuminganxingzhishu"}, {"CalcId": "CALC-053", "CalcName": "MELD 评分", "Category": "消化", "Description": "终末期肝病模型评分，用于评估肝病严重程度和预后，分值越高预后越差。", "Formula": "3.8*ln({bilirubin}) + 11.2*ln({inr}) + 9.6*ln({creatinine}) + 6.4*{etiology}", "InputParams": "[{\"name\": \"bilirubin\", \"label\": \"胆红素\", \"unit\": \"mg/dL\"}, {\"name\": \"inr\", \"label\": \"国际标准化比值\", \"unit\": \"\"}, {\"name\": \"creatinine\", \"label\": \"肌酐\", \"unit\": \"mg/dL\"}, {\"name\": \"etiology\", \"label\": \"病因（胆汁淤积性=1，酒精性=0）\", \"unit\": \"\"}]", "ResultUnit": "分", "RefRange": "≤10分：3个月死亡率低；10-20分：中等；≥20分：高", "PinyinCode": "MELD PF", "PinyinFull": "MELD pingfen"}, {"CalcId": "CALC-054", "CalcName": "CURB-65 评分", "Category": "呼吸", "Description": "社区获得性肺炎严重程度评分，用于判断是否需要住院或ICU治疗。", "Formula": "({confusion} + {urea} + {rr} + {bp} + {age})", "InputParams": "[{\"name\": \"confusion\", \"label\": \"意识混乱\", \"unit\": \"是=1，否=0\"}, {\"name\": \"urea\", \"label\": \"尿素氮>7mmol/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"rr\", \"label\": \"呼吸频率≥30次/分\", \"unit\": \"是=1，否=0\"}, {\"name\": \"bp\", \"label\": \"收缩压<90或舒张压≤60mmHg\", \"unit\": \"是=1，否=0\"}, {\"name\": \"age\", \"label\": \"年龄≥65岁\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "0-1分：低危，门诊治疗；2分：中危，住院；3-5分：高危，考虑ICU", "PinyinCode": "CURB-65 PF", "PinyinFull": "CURB-65 pingfen"}, {"CalcId": "CALC-055", "CalcName": "Framingham 风险评分", "Category": "心血管", "Description": "评估10年冠心病风险，基于年龄、性别、血脂、血压、吸烟和糖尿病等因素。", "Formula": "({sex}*{age} + {chol} + {hdl} + {sbp} + {smoke} + {diabetes})", "InputParams": "[{\"name\": \"sex\", \"label\": \"性别（男=1，女=0）\", \"unit\": \"\"}, {\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"岁\"}, {\"name\": \"chol\", \"label\": \"总胆固醇\", \"unit\": \"mg/dL\"}, {\"name\": \"hdl\", \"label\": \"高密度脂蛋白\", \"unit\": \"mg/dL\"}, {\"name\": \"sbp\", \"label\": \"收缩压\", \"unit\": \"mmHg\"}, {\"name\": \"smoke\", \"label\": \"吸烟（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病（是=1，否=0）\", \"unit\": \"\"}]", "ResultUnit": "%", "RefRange": "低危<10%，中危10-20%，高危>20%", "PinyinCode": "FRAMINGHAM FXPF", "PinyinFull": "Framingham fengxianpingfen"}, {"CalcId": "CALC-056", "CalcName": "ASCVD 风险评分", "Category": "心血管", "Description": "评估10年动脉粥样硬化性心血管疾病风险，包括心梗和卒中。", "Formula": "1 - 0.9533^exp({sum})", "InputParams": "[{\"name\": \"sum\", \"label\": \"风险因素加权和\", \"unit\": \"\"}]", "ResultUnit": "%", "RefRange": "低危<5%，中危5-7.5%，高危≥7.5%", "PinyinCode": "ASCVD FXPF", "PinyinFull": "ASCVD fengxianpingfen"}, {"CalcId": "CALC-057", "CalcName": "GRACE 评分", "Category": "心血管", "Description": "急性冠脉综合征患者住院和6个月死亡风险评分。", "Formula": "{age} + {hr} + {sbp} + {creatinine} + {killip} + {cardiac_arrest} + {st_deviation} + {enzymes}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"岁\"}, {\"name\": \"hr\", \"label\": \"心率\", \"unit\": \"次/分\"}, {\"name\": \"sbp\", \"label\": \"收缩压\", \"unit\": \"mmHg\"}, {\"name\": \"creatinine\", \"label\": \"肌酐\", \"unit\": \"mg/dL\"}, {\"name\": \"killip\", \"label\": \"Killip分级\", \"unit\": \"1-4\"}, {\"name\": \"cardiac_arrest\", \"label\": \"入院时心脏骤停\", \"unit\": \"是=1，否=0\"}, {\"name\": \"st_deviation\", \"label\": \"ST段偏移\", \"unit\": \"是=1，否=0\"}, {\"name\": \"enzymes\", \"label\": \"心肌酶升高\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "≤108低危，109-140中危，>140高危", "PinyinCode": "GRACE PF", "PinyinFull": "GRACE pingfen"}, {"CalcId": "CALC-058", "CalcName": "HEART 评分", "Category": "心血管", "Description": "胸痛患者主要心血管不良事件风险评分，用于急诊分层。", "Formula": "{history} + {ecg} + {age} + {risk_factors} + {troponin}", "InputParams": "[{\"name\": \"history\", \"label\": \"病史\", \"unit\": \"0-2\"}, {\"name\": \"ecg\", \"label\": \"心电图\", \"unit\": \"0-2\"}, {\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"0-2\"}, {\"name\": \"risk_factors\", \"label\": \"危险因素\", \"unit\": \"0-2\"}, {\"name\": \"troponin\", \"label\": \"肌钙蛋白\", \"unit\": \"0-2\"}]", "ResultUnit": "分", "RefRange": "0-3低危，4-6中危，7-10高危", "PinyinCode": "HEART PF", "PinyinFull": "HEART pingfen"}, {"CalcId": "CALC-059", "CalcName": "PESI 肺栓塞严重指数", "Category": "呼吸", "Description": "肺栓塞患者30天死亡风险评分，用于危险分层。", "Formula": "{age} + {sex} + {cancer} + {heart_failure} + {chronic_lung} + {hr} + {sbp} + {rr} + {temp} + {altered_mental} + {o2sat}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"岁\"}, {\"name\": \"sex\", \"label\": \"性别（男=10，女=0）\", \"unit\": \"\"}, {\"name\": \"cancer\", \"label\": \"癌症（是=30，否=0）\", \"unit\": \"\"}, {\"name\": \"heart_failure\", \"label\": \"心力衰竭（是=10，否=0）\", \"unit\": \"\"}, {\"name\": \"chronic_lung\", \"label\": \"慢性肺病（是=10，否=0）\", \"unit\": \"\"}, {\"name\": \"hr\", \"label\": \"心率≥110次/分（是=20，否=0）\", \"unit\": \"\"}, {\"name\": \"sbp\", \"label\": \"收缩压<100mmHg（是=30，否=0）\", \"unit\": \"\"}, {\"name\": \"rr\", \"label\": \"呼吸频率≥30次/分（是=20，否=0）\", \"unit\": \"\"}, {\"name\": \"temp\", \"label\": \"体温<36°C（是=20，否=0）\", \"unit\": \"\"}, {\"name\": \"altered_mental\", \"label\": \"意识改变（是=60，否=0）\", \"unit\": \"\"}, {\"name\": \"o2sat\", \"label\": \"血氧饱和度<90%（是=20，否=0）\", \"unit\": \"\"}]", "ResultUnit": "分", "RefRange": "≤65低危，66-85中低危，86-105中高危，106-125高危，>125极高危", "PinyinCode": "PESI FSSYZZS", "PinyinFull": "PESI feishuanseyanzhongzhishu"}, {"CalcId": "CALC-060", "CalcName": "Wells 深静脉血栓评分", "Category": "血管", "Description": "深静脉血栓临床概率评分，用于DVT诊断可能性评估。", "Formula": "{cancer} + {paralysis} + {bedridden} + {swollen_leg} + {calf} + {pitting} + {collateral} + {alternative}", "InputParams": "[{\"name\": \"cancer\", \"label\": \"活动性癌症\", \"unit\": \"是=1，否=0\"}, {\"name\": \"paralysis\", \"label\": \"瘫痪或近期石膏固定\", \"unit\": \"是=1，否=0\"}, {\"name\": \"bedridden\", \"label\": \"卧床>3天或大手术\", \"unit\": \"是=1.5，否=0\"}, {\"name\": \"swollen_leg\", \"label\": \"沿深静脉压痛\", \"unit\": \"是=1，否=0\"}, {\"name\": \"calf\", \"label\": \"小腿肿胀>3cm\", \"unit\": \"是=1，否=0\"}, {\"name\": \"pitting\", \"label\": \"凹陷性水肿\", \"unit\": \"是=1，否=0\"}, {\"name\": \"collateral\", \"label\": \"浅静脉侧支循环\", \"unit\": \"是=1，否=0\"}, {\"name\": \"alternative\", \"label\": \"其他诊断可能性更小\", \"unit\": \"是=-2，否=0\"}]", "ResultUnit": "分", "RefRange": "≤0低度可能，1-2中度可能，≥3高度可能", "PinyinCode": "WELLS SJMXSPF", "PinyinFull": "Wells shenjingmaixueshuanpingfen"}, {"CalcId": "CALC-061", "CalcName": "Ranson 评分", "Category": "消化", "Description": "急性胰腺炎严重程度评分，入院时和48小时评估。", "Formula": "{age} + {wbc} + {glucose} + {ldh} + {ast} + {hct_drop} + {bun_increase} + {calcium} + {pao2} + {base_deficit} + {fluid_sequestration}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄>55岁\", \"unit\": \"是=1，否=0\"}, {\"name\": \"wbc\", \"label\": \"白细胞>16×10^9/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"glucose\", \"label\": \"血糖>11.1mmol/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"ldh\", \"label\": \"LDH>350IU/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"ast\", \"label\": \"AST>250IU/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"hct_drop\", \"label\": \"红细胞压积下降>10%\", \"unit\": \"是=1，否=0\"}, {\"name\": \"bun_increase\", \"label\": \"BUN升高>1.8mmol/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"calcium\", \"label\": \"血钙<2mmol/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"pao2\", \"label\": \"PaO2<60mmHg\", \"unit\": \"是=1，否=0\"}, {\"name\": \"base_deficit\", \"label\": \"碱缺失>4mmol/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"fluid_sequestration\", \"label\": \"液体丢失>6L\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "0-2轻症，3-4中症，≥5重症", "PinyinCode": "RANSON PF", "PinyinFull": "Ranson pingfen"}, {"CalcId": "CALC-062", "CalcName": "Glasgow-Imrie 评分", "Category": "消化", "Description": "急性胰腺炎严重程度评分，48小时内评估。", "Formula": "{age} + {wbc} + {glucose} + {bun} + {calcium} + {pao2} + {albumin} + {ldh}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄>55岁\", \"unit\": \"是=1，否=0\"}, {\"name\": \"wbc\", \"label\": \"白细胞>15×10^9/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"glucose\", \"label\": \"血糖>10mmol/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"bun\", \"label\": \"尿素氮>16mmol/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"calcium\", \"label\": \"血钙<2mmol/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"pao2\", \"label\": \"PaO2<60mmHg\", \"unit\": \"是=1，否=0\"}, {\"name\": \"albumin\", \"label\": \"白蛋白<32g/L\", \"unit\": \"是=1，否=0\"}, {\"name\": \"ldh\", \"label\": \"LDH>600IU/L\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "0-2轻症，3-4中症，≥5重症", "PinyinCode": "GLASGOW-IMRIE PF", "PinyinFull": "Glasgow-Imrie pingfen"}, {"CalcId": "CALC-063", "CalcName": "Hunt-Hess 分级", "Category": "神经", "Description": "蛛网膜下腔出血临床分级，用于预后评估。", "Formula": "{grade}", "InputParams": "[{\"name\": \"grade\", \"label\": \"分级（1-5）\", \"unit\": \"\"}]", "ResultUnit": "级", "RefRange": "1级无症状，2级头痛，3级嗜睡，4级昏迷，5级深昏迷", "PinyinCode": "HUNT-HESS FJ", "PinyinFull": "Hunt-Hess fenji"}, {"CalcId": "CALC-064", "CalcName": "Fisher 分级", "Category": "神经", "Description": "蛛网膜下腔出血CT分级，预测脑血管痉挛风险。", "Formula": "{grade}", "InputParams": "[{\"name\": \"grade\", \"label\": \"分级（1-4）\", \"unit\": \"\"}]", "ResultUnit": "级", "RefRange": "1级无出血，2级弥漫薄层，3级厚层或血肿，4级脑室内出血", "PinyinCode": "FISHER FJ", "PinyinFull": "Fisher fenji"}, {"CalcId": "CALC-065", "CalcName": "Spetzler-Martin 分级", "Category": "神经", "Description": "脑动静脉畸形手术风险分级。", "Formula": "{size} + {eloquent} + {venous_drainage}", "InputParams": "[{\"name\": \"size\", \"label\": \"大小（<3cm=1，3-6cm=2，>6cm=3）\", \"unit\": \"\"}, {\"name\": \"eloquent\", \"label\": \"功能区（否=0，是=1）\", \"unit\": \"\"}, {\"name\": \"venous_drainage\", \"label\": \"深静脉引流（否=0，是=1）\", \"unit\": \"\"}]", "ResultUnit": "级", "RefRange": "1-2级低风险，3级中等，4-5级高风险", "PinyinCode": "SPETZLER-MARTIN FJ", "PinyinFull": "Spetzler-Martin fenji"}, {"CalcId": "CALC-066", "CalcName": "Jugular venous pressure", "Category": "心血管", "Description": "颈静脉压评估，用于估计中心静脉压。", "Formula": "{height_cm} + 5", "InputParams": "[{\"name\": \"height_cm\", \"label\": \"颈静脉搏动最高点高度\", \"unit\": \"cm\"}]", "ResultUnit": "cmH2O", "RefRange": "正常5-10cmH2O", "PinyinCode": "JUGULAR VENOUS PRESSURE", "PinyinFull": "Jugular venous pressure"}, {"CalcId": "CALC-067", "CalcName": "NIHSS 评分", "Category": "神经", "Description": "美国国立卫生研究院卒中量表，评估神经功能缺损程度。", "Formula": "{1a} + {1b} + {1c} + {2} + {3} + {4} + {5a} + {5b} + {6a} + {6b} + {7} + {8} + {9} + {10} + {11}", "InputParams": "[{\"name\": \"1a\", \"label\": \"意识水平\", \"unit\": \"0-3\"}, {\"name\": \"1b\", \"label\": \"意识水平提问\", \"unit\": \"0-2\"}, {\"name\": \"1c\", \"label\": \"意识水平指令\", \"unit\": \"0-2\"}, {\"name\": \"2\", \"label\": \"凝视\", \"unit\": \"0-2\"}, {\"name\": \"3\", \"label\": \"视野\", \"unit\": \"0-3\"}, {\"name\": \"4\", \"label\": \"面瘫\", \"unit\": \"0-3\"}, {\"name\": \"5a\", \"label\": \"左上肢运动\", \"unit\": \"0-4\"}, {\"name\": \"5b\", \"label\": \"右上肢运动\", \"unit\": \"0-4\"}, {\"name\": \"6a\", \"label\": \"左下肢运动\", \"unit\": \"0-4\"}, {\"name\": \"6b\", \"label\": \"右下肢运动\", \"unit\": \"0-4\"}, {\"name\": \"7\", \"label\": \"共济失调\", \"unit\": \"0-2\"}, {\"name\": \"8\", \"label\": \"感觉\", \"unit\": \"0-2\"}, {\"name\": \"9\", \"label\": \"语言\", \"unit\": \"0-3\"}, {\"name\": \"10\", \"label\": \"构音障碍\", \"unit\": \"0-2\"}, {\"name\": \"11\", \"label\": \"忽视\", \"unit\": \"0-2\"}]", "ResultUnit": "分", "RefRange": "0-4轻度，5-15中度，16-20中重度，21-42重度", "PinyinCode": "NIHSS PF", "PinyinFull": "NIHSS pingfen"}, {"CalcId": "CALC-068", "CalcName": "Rankin 评分", "Category": "神经", "Description": "改良Rankin量表，评估卒中后功能残疾程度。", "Formula": "{score}", "InputParams": "[{\"name\": \"score\", \"label\": \"评分（0-6）\", \"unit\": \"\"}]", "ResultUnit": "分", "RefRange": "0无症状，1无明显残疾，2轻度残疾，3中度残疾，4中重度残疾，5重度残疾，6死亡", "PinyinCode": "RANKIN PF", "PinyinFull": "Rankin pingfen"}, {"CalcId": "CALC-069", "CalcName": "HAS-BLED 评分", "Category": "心血管", "Description": "房颤患者抗凝出血风险评分。", "Formula": "{hypertension} + {renal} + {liver} + {stroke} + {bleeding} + {labile_inr} + {elderly} + {drugs} + {alcohol}", "InputParams": "[{\"name\": \"hypertension\", \"label\": \"高血压\", \"unit\": \"是=1，否=0\"}, {\"name\": \"renal\", \"label\": \"肾功能异常\", \"unit\": \"是=1，否=0\"}, {\"name\": \"liver\", \"label\": \"肝功能异常\", \"unit\": \"是=1，否=0\"}, {\"name\": \"stroke\", \"label\": \"卒中史\", \"unit\": \"是=1，否=0\"}, {\"name\": \"bleeding\", \"label\": \"出血史\", \"unit\": \"是=1，否=0\"}, {\"name\": \"labile_inr\", \"label\": \"INR不稳定\", \"unit\": \"是=1，否=0\"}, {\"name\": \"elderly\", \"label\": \"年龄>65岁\", \"unit\": \"是=1，否=0\"}, {\"name\": \"drugs\", \"label\": \"药物（抗血小板等）\", \"unit\": \"是=1，否=0\"}, {\"name\": \"alcohol\", \"label\": \"饮酒\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "0-2低危，≥3高危", "PinyinCode": "HAS-BLED PF", "PinyinFull": "HAS-BLED pingfen"}, {"CalcId": "CALC-070", "CalcName": "CRUSADE 出血评分", "Category": "心血管", "Description": "急性冠脉综合征患者院内出血风险评分。", "Formula": "{baseline_hct} + {wbc} + {sbp} + {hr} + {creatinine} + {heart_failure} + {vascular_disease} + {diabetes}", "InputParams": "[{\"name\": \"baseline_hct\", \"label\": \"基线红细胞压积\", \"unit\": \"%\"}, {\"name\": \"wbc\", \"label\": \"白细胞计数\", \"unit\": \"×10^9/L\"}, {\"name\": \"sbp\", \"label\": \"收缩压\", \"unit\": \"mmHg\"}, {\"name\": \"hr\", \"label\": \"心率\", \"unit\": \"次/分\"}, {\"name\": \"creatinine\", \"label\": \"肌酐\", \"unit\": \"mg/dL\"}, {\"name\": \"heart_failure\", \"label\": \"心力衰竭体征\", \"unit\": \"是=1，否=0\"}, {\"name\": \"vascular_disease\", \"label\": \"血管疾病史\", \"unit\": \"是=1，否=0\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "≤20极低危，21-30低危，31-40中危，41-50高危，>50极高危", "PinyinCode": "CRUSADE CXPF", "PinyinFull": "CRUSADE chuxiepingfen"}, {"CalcId": "CALC-071", "CalcName": "ACUITY 出血评分", "Category": "心血管", "Description": "急性冠脉综合征患者出血风险评分，用于抗栓治疗决策。", "Formula": "{age} + {sex} + {anemia} + {creatinine} + {leukocytosis} + {thrombocytopenia} + {st_segment} + {troponin} + {antithrombotic}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"岁\"}, {\"name\": \"sex\", \"label\": \"性别（男=1，女=0）\", \"unit\": \"\"}, {\"name\": \"anemia\", \"label\": \"贫血（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"creatinine\", \"label\": \"肌酐升高\", \"unit\": \"是=1，否=0\"}, {\"name\": \"leukocytosis\", \"label\": \"白细胞增多\", \"unit\": \"是=1，否=0\"}, {\"name\": \"thrombocytopenia\", \"label\": \"血小板减少\", \"unit\": \"是=1，否=0\"}, {\"name\": \"st_segment\", \"label\": \"ST段偏移\", \"unit\": \"是=1，否=0\"}, {\"name\": \"troponin\", \"label\": \"肌钙蛋白升高\", \"unit\": \"是=1，否=0\"}, {\"name\": \"antithrombotic\", \"label\": \"抗栓治疗\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "低危<10，中危10-20，高危>20", "PinyinCode": "ACUITY CXPF", "PinyinFull": "ACUITY chuxiepingfen"}, {"CalcId": "CALC-072", "CalcName": "HOMA-B 细胞功能指数", "Category": "内分泌", "Description": "评估胰岛β细胞基础功能，基于空腹血糖和胰岛素水平计算。", "Formula": "(360*{insulin})/({glucose}-63)", "InputParams": "[{\"name\": \"insulin\", \"label\": \"空腹胰岛素\", \"unit\": \"μU/mL\"}, {\"name\": \"glucose\", \"label\": \"空腹血糖\", \"unit\": \"mg/dL\"}]", "ResultUnit": "%", "RefRange": "正常参考值通常为100%-200%，低于正常提示β细胞功能减退。", "PinyinCode": "HOMA-B XBGNZS", "PinyinFull": "HOMA-B xibaogongnengzhishu"}, {"CalcId": "CALC-073", "CalcName": "HOMA-S 胰岛素敏感性", "Category": "内分泌", "Description": "评估胰岛素敏感性，基于空腹血糖和胰岛素水平计算。", "Formula": "({glucose}*{insulin})/405", "InputParams": "[{\"name\": \"glucose\", \"label\": \"空腹血糖\", \"unit\": \"mg/dL\"}, {\"name\": \"insulin\", \"label\": \"空腹胰岛素\", \"unit\": \"μU/mL\"}]", "ResultUnit": "", "RefRange": "正常值通常为1，数值越低表示胰岛素抵抗越严重。", "PinyinCode": "HOMA-S YDSMGX", "PinyinFull": "HOMA-S yidaosuminganxing"}, {"CalcId": "CALC-074", "CalcName": "Matsuda 指数", "Category": "内分泌", "Description": "评估胰岛素敏感性，基于口服葡萄糖耐量试验中多次血糖和胰岛素水平。", "Formula": "10000/sqrt(({glucose0}*{insulin0})*({glucoseMean}*{insulinMean}))", "InputParams": "[{\"name\": \"glucose0\", \"label\": \"空腹血糖\", \"unit\": \"mg/dL\"}, {\"name\": \"insulin0\", \"label\": \"空腹胰岛素\", \"unit\": \"μU/mL\"}, {\"name\": \"glucoseMean\", \"label\": \"平均血糖（OGTT）\", \"unit\": \"mg/dL\"}, {\"name\": \"insulinMean\", \"label\": \"平均胰岛素（OGTT）\", \"unit\": \"μU/mL\"}]", "ResultUnit": "", "RefRange": "正常值>2.5，较低值提示胰岛素抵抗。", "PinyinCode": "MATSUDA ZS", "PinyinFull": "Matsuda zhishu"}, {"CalcId": "CALC-075", "CalcName": "OGIS 口服葡萄糖胰岛素敏感性", "Category": "内分泌", "Description": "评估口服葡萄糖负荷后的胰岛素敏感性，基于OGTT数据。", "Formula": "({glucose0}*{insulin0})/({glucose120}*{insulin120})", "InputParams": "[{\"name\": \"glucose0\", \"label\": \"空腹血糖\", \"unit\": \"mg/dL\"}, {\"name\": \"insulin0\", \"label\": \"空腹胰岛素\", \"unit\": \"μU/mL\"}, {\"name\": \"glucose120\", \"label\": \"120分钟血糖\", \"unit\": \"mg/dL\"}, {\"name\": \"insulin120\", \"label\": \"120分钟胰岛素\", \"unit\": \"μU/mL\"}]", "ResultUnit": "", "RefRange": "数值越高，胰岛素敏感性越好。", "PinyinCode": "OGIS KFPTTYDSMGX", "PinyinFull": "OGIS koufuputaotangyidaosuminganxing"}, {"CalcId": "CALC-076", "CalcName": "Pittsburgh 睡眠质量指数", "Category": "睡眠", "Description": "评估睡眠质量，包含多个维度，总分0-21分，分数越高睡眠质量越差。", "Formula": "{subjective}+{latency}+{duration}+{efficiency}+{disturbances}+{medication}+{daytime}", "InputParams": "[{\"name\": \"subjective\", \"label\": \"主观睡眠质量\", \"unit\": \"分\"}, {\"name\": \"latency\", \"label\": \"入睡时间\", \"unit\": \"分\"}, {\"name\": \"duration\", \"label\": \"睡眠时间\", \"unit\": \"分\"}, {\"name\": \"efficiency\", \"label\": \"睡眠效率\", \"unit\": \"分\"}, {\"name\": \"disturbances\", \"label\": \"睡眠障碍\", \"unit\": \"分\"}, {\"name\": \"medication\", \"label\": \"催眠药物使用\", \"unit\": \"分\"}, {\"name\": \"daytime\", \"label\": \"日间功能障碍\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "总分≤5为睡眠质量好，>5为睡眠质量差。", "PinyinCode": "PITTSBURGH SMZLZS", "PinyinFull": "Pittsburgh shuimianzhiliangzhishu"}, {"CalcId": "CALC-077", "CalcName": "Epworth 嗜睡量表", "Category": "睡眠", "Description": "评估日间嗜睡程度，总分0-24分，分数越高嗜睡越严重。", "Formula": "{item1}+{item2}+{item3}+{item4}+{item5}+{item6}+{item7}+{item8}", "InputParams": "[{\"name\": \"item1\", \"label\": \"坐着阅读时\", \"unit\": \"分\"}, {\"name\": \"item2\", \"label\": \"看电视时\", \"unit\": \"分\"}, {\"name\": \"item3\", \"label\": \"在公共场所静坐时\", \"unit\": \"分\"}, {\"name\": \"item4\", \"label\": \"连续乘车1小时\", \"unit\": \"分\"}, {\"name\": \"item5\", \"label\": \"条件允许时下午躺下休息\", \"unit\": \"分\"}, {\"name\": \"item6\", \"label\": \"坐着与人交谈时\", \"unit\": \"分\"}, {\"name\": \"item7\", \"label\": \"午饭后静坐时\", \"unit\": \"分\"}, {\"name\": \"item8\", \"label\": \"开车等红灯时\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-10正常，11-14轻度嗜睡，15-17中度，18-24重度。", "PinyinCode": "EPWORTH SSLB", "PinyinFull": "Epworth shishuiliangbiao"}, {"CalcId": "CALC-078", "CalcName": "STOP-BANG 睡眠呼吸暂停风险", "Category": "睡眠", "Description": "筛查阻塞性睡眠呼吸暂停风险，总分0-8分，分数越高风险越大。", "Formula": "{snore}+{tired}+{observed}+{pressure}+{bmi}+{age}+{neck}+{gender}", "InputParams": "[{\"name\": \"snore\", \"label\": \"打鼾（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"tired\", \"label\": \"日间疲劳（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"observed\", \"label\": \"观察到的呼吸暂停（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"pressure\", \"label\": \"高血压（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"bmi\", \"label\": \"BMI>35（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"age\", \"label\": \"年龄>50（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"neck\", \"label\": \"颈围>40cm（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"gender\", \"label\": \"男性（是=1，否=0）\", \"unit\": \"\"}]", "ResultUnit": "分", "RefRange": "0-2低风险，3-4中风险，5-8高风险。", "PinyinCode": "STOP-BANG SMHXZTFX", "PinyinFull": "STOP-BANG shuimianhuxizantingfengxian"}, {"CalcId": "CALC-079", "CalcName": "Berlin 问卷", "Category": "睡眠", "Description": "评估睡眠呼吸暂停风险，分为低风险和高风险。", "Formula": "if({category1}+{category2}+{category3}>=2, 1, 0)", "InputParams": "[{\"name\": \"category1\", \"label\": \"类别1阳性（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"category2\", \"label\": \"类别2阳性（是=1，否=0）\", \"unit\": \"\"}, {\"name\": \"category3\", \"label\": \"类别3阳性（是=1，否=0）\", \"unit\": \"\"}]", "ResultUnit": "", "RefRange": "0=低风险，1=高风险。", "PinyinCode": "BERLIN WJ", "PinyinFull": "Berlin wenjuan"}, {"CalcId": "CALC-080", "CalcName": "GAD-7 焦虑量表", "Category": "心理", "Description": "评估广泛性焦虑症状，总分0-21分，分数越高焦虑越严重。", "Formula": "{item1}+{item2}+{item3}+{item4}+{item5}+{item6}+{item7}", "InputParams": "[{\"name\": \"item1\", \"label\": \"感到紧张、焦虑或急切\", \"unit\": \"分\"}, {\"name\": \"item2\", \"label\": \"无法停止或控制担忧\", \"unit\": \"分\"}, {\"name\": \"item3\", \"label\": \"对各种事情担忧过多\", \"unit\": \"分\"}, {\"name\": \"item4\", \"label\": \"难以放松\", \"unit\": \"分\"}, {\"name\": \"item5\", \"label\": \"坐立不安\", \"unit\": \"分\"}, {\"name\": \"item6\", \"label\": \"容易烦恼或易怒\", \"unit\": \"分\"}, {\"name\": \"item7\", \"label\": \"感到害怕\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-4正常，5-9轻度，10-14中度，15-21重度。", "PinyinCode": "GAD-7 JLLB", "PinyinFull": "GAD-7 jiaolvliangbiao"}, {"CalcId": "CALC-081", "CalcName": "PHQ-9 抑郁量表", "Category": "心理", "Description": "评估抑郁症状严重程度，总分0-27分，分数越高抑郁越严重。", "Formula": "{item1}+{item2}+{item3}+{item4}+{item5}+{item6}+{item7}+{item8}+{item9}", "InputParams": "[{\"name\": \"item1\", \"label\": \"做事提不起劲或没有兴趣\", \"unit\": \"分\"}, {\"name\": \"item2\", \"label\": \"感到心情低落、沮丧或绝望\", \"unit\": \"分\"}, {\"name\": \"item3\", \"label\": \"入睡困难、睡不安稳或睡眠过多\", \"unit\": \"分\"}, {\"name\": \"item4\", \"label\": \"感觉疲倦或没有活力\", \"unit\": \"分\"}, {\"name\": \"item5\", \"label\": \"食欲不振或吃太多\", \"unit\": \"分\"}, {\"name\": \"item6\", \"label\": \"觉得自己很糟或觉得自己很失败\", \"unit\": \"分\"}, {\"name\": \"item7\", \"label\": \"对事物专注有困难\", \"unit\": \"分\"}, {\"name\": \"item8\", \"label\": \"动作或说话速度缓慢到别人察觉\", \"unit\": \"分\"}, {\"name\": \"item9\", \"label\": \"有不如死掉或用某种方式伤害自己的念头\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-4正常，5-9轻度，10-14中度，15-19中重度，20-27重度。", "PinyinCode": "PHQ-9 YYLB", "PinyinFull": "PHQ-9 yiyuliangbiao"}, {"CalcId": "CALC-082", "CalcName": "MMSE 简易精神状态检查", "Category": "认知", "Description": "评估认知功能，总分0-30分，分数越低认知障碍越严重。", "Formula": "{orientation}+{registration}+{attention}+{recall}+{language}+{visuospatial}", "InputParams": "[{\"name\": \"orientation\", \"label\": \"定向力得分\", \"unit\": \"分\"}, {\"name\": \"registration\", \"label\": \"记忆力得分\", \"unit\": \"分\"}, {\"name\": \"attention\", \"label\": \"注意力和计算力得分\", \"unit\": \"分\"}, {\"name\": \"recall\", \"label\": \"回忆力得分\", \"unit\": \"分\"}, {\"name\": \"language\", \"label\": \"语言能力得分\", \"unit\": \"分\"}, {\"name\": \"visuospatial\", \"label\": \"视空间能力得分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "27-30正常，21-26轻度，10-20中度，<10重度。", "PinyinCode": "MMSE JYJSZTJC", "PinyinFull": "MMSE jianyijingshenzhuangtaijiancha"}, {"CalcId": "CALC-083", "CalcName": "MoCA 蒙特利尔认知评估", "Category": "认知", "Description": "评估认知功能，总分0-30分，分数越低认知障碍越严重。", "Formula": "{visuospatial}+{naming}+{attention}+{language}+{abstraction}+{delayedRecall}+{orientation}", "InputParams": "[{\"name\": \"visuospatial\", \"label\": \"视空间执行功能得分\", \"unit\": \"分\"}, {\"name\": \"naming\", \"label\": \"命名得分\", \"unit\": \"分\"}, {\"name\": \"attention\", \"label\": \"注意力得分\", \"unit\": \"分\"}, {\"name\": \"language\", \"label\": \"语言得分\", \"unit\": \"分\"}, {\"name\": \"abstraction\", \"label\": \"抽象思维得分\", \"unit\": \"分\"}, {\"name\": \"delayedRecall\", \"label\": \"延迟回忆得分\", \"unit\": \"分\"}, {\"name\": \"orientation\", \"label\": \"定向力得分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "≥26正常，<26提示认知障碍。", "PinyinCode": "MOCA MTLERZPG", "PinyinFull": "MoCA mengtelierrenzhipinggu"}, {"CalcId": "CALC-084", "CalcName": "ADL 日常生活能力", "Category": "功能评估", "Description": "评估基本日常生活活动能力，总分0-100分，分数越高独立性越强。", "Formula": "{bathing}+{dressing}+{toileting}+{transferring}+{continence}+{feeding}", "InputParams": "[{\"name\": \"bathing\", \"label\": \"洗澡得分\", \"unit\": \"分\"}, {\"name\": \"dressing\", \"label\": \"穿衣得分\", \"unit\": \"分\"}, {\"name\": \"toileting\", \"label\": \"如厕得分\", \"unit\": \"分\"}, {\"name\": \"transferring\", \"label\": \"转移得分\", \"unit\": \"分\"}, {\"name\": \"continence\", \"label\": \"控制大小便得分\", \"unit\": \"分\"}, {\"name\": \"feeding\", \"label\": \"进食得分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "100分完全独立，60-99轻度依赖，40-59中度依赖，20-39重度依赖，<20完全依赖。", "PinyinCode": "ADL RCSHNL", "PinyinFull": "ADL richangshenghuonengli"}, {"CalcId": "CALC-085", "CalcName": "IADL 工具性日常生活能力", "Category": "功能评估", "Description": "评估工具性日常生活活动能力，总分0-8分（女性）或0-5分（男性），分数越高独立性越强。", "Formula": "{phone}+{shopping}+{cooking}+{housekeeping}+{laundry}+{transport}+{medication}+{finances}", "InputParams": "[{\"name\": \"phone\", \"label\": \"使用电话能力\", \"unit\": \"分\"}, {\"name\": \"shopping\", \"label\": \"购物能力\", \"unit\": \"分\"}, {\"name\": \"cooking\", \"label\": \"做饭能力\", \"unit\": \"分\"}, {\"name\": \"housekeeping\", \"label\": \"家务能力\", \"unit\": \"分\"}, {\"name\": \"laundry\", \"label\": \"洗衣能力\", \"unit\": \"分\"}, {\"name\": \"transport\", \"label\": \"交通能力\", \"unit\": \"分\"}, {\"name\": \"medication\", \"label\": \"服药能力\", \"unit\": \"分\"}, {\"name\": \"finances\", \"label\": \"财务管理能力\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "女性满分8，男性满分5，分数越低依赖越重。", "PinyinCode": "IADL GJXRCSHNL", "PinyinFull": "IADL gongjuxingrichangshenghuonengli"}, {"CalcId": "CALC-086", "CalcName": "Barthel 指数", "Category": "功能评估", "Description": "评估日常生活活动能力，总分0-100分，分数越高独立性越强。", "Formula": "{feeding}+{bathing}+{grooming}+{dressing}+{bowels}+{bladder}+{toilet}+{transfers}+{mobility}+{stairs}", "InputParams": "[{\"name\": \"feeding\", \"label\": \"进食\", \"unit\": \"分\"}, {\"name\": \"bathing\", \"label\": \"洗澡\", \"unit\": \"分\"}, {\"name\": \"grooming\", \"label\": \"修饰\", \"unit\": \"分\"}, {\"name\": \"dressing\", \"label\": \"穿衣\", \"unit\": \"分\"}, {\"name\": \"bowels\", \"label\": \"大便控制\", \"unit\": \"分\"}, {\"name\": \"bladder\", \"label\": \"小便控制\", \"unit\": \"分\"}, {\"name\": \"toilet\", \"label\": \"如厕\", \"unit\": \"分\"}, {\"name\": \"transfers\", \"label\": \"床椅转移\", \"unit\": \"分\"}, {\"name\": \"mobility\", \"label\": \"平地行走\", \"unit\": \"分\"}, {\"name\": \"stairs\", \"label\": \"上下楼梯\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "100分独立，60-99轻度依赖，40-59中度依赖，20-39重度依赖，<20完全依赖。", "PinyinCode": "BARTHEL ZS", "PinyinFull": "Barthel zhishu"}, {"CalcId": "CALC-087", "CalcName": "Katz 指数", "Category": "功能评估", "Description": "评估基本日常生活活动独立性，总分0-6分，分数越高独立性越强。", "Formula": "{bathing}+{dressing}+{toileting}+{transferring}+{continence}+{feeding}", "InputParams": "[{\"name\": \"bathing\", \"label\": \"洗澡（独立=1，依赖=0）\", \"unit\": \"\"}, {\"name\": \"dressing\", \"label\": \"穿衣（独立=1，依赖=0）\", \"unit\": \"\"}, {\"name\": \"toileting\", \"label\": \"如厕（独立=1，依赖=0）\", \"unit\": \"\"}, {\"name\": \"transferring\", \"label\": \"转移（独立=1，依赖=0）\", \"unit\": \"\"}, {\"name\": \"continence\", \"label\": \"控制大小便（独立=1，依赖=0）\", \"unit\": \"\"}, {\"name\": \"feeding\", \"label\": \"进食（独立=1，依赖=0）\", \"unit\": \"\"}]", "ResultUnit": "分", "RefRange": "6分完全独立，4-5轻度依赖，2-3中度依赖，0-1重度依赖。", "PinyinCode": "KATZ ZS", "PinyinFull": "Katz zhishu"}, {"CalcId": "CALC-088", "CalcName": "Tinetti 平衡与步态评估", "Category": "功能评估", "Description": "评估老年人平衡和步态，总分0-28分，分数越低跌倒风险越高。", "Formula": "{balance}+{gait}", "InputParams": "[{\"name\": \"balance\", \"label\": \"平衡得分\", \"unit\": \"分\"}, {\"name\": \"gait\", \"label\": \"步态得分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": ">24低风险，19-23中风险，<19高风险。", "PinyinCode": "TINETTI PHYBTPG", "PinyinFull": "Tinetti pinghengyubutaipinggu"}, {"CalcId": "CALC-089", "CalcName": "Berg 平衡量表", "Category": "功能评估", "Description": "评估平衡功能，总分0-56分，分数越低平衡障碍越严重。", "Formula": "{item1}+{item2}+{item3}+{item4}+{item5}+{item6}+{item7}+{item8}+{item9}+{item10}+{item11}+{item12}+{item13}+{item14}", "InputParams": "[{\"name\": \"item1\", \"label\": \"坐位站起\", \"unit\": \"分\"}, {\"name\": \"item2\", \"label\": \"站立\", \"unit\": \"分\"}, {\"name\": \"item3\", \"label\": \"坐位\", \"unit\": \"分\"}, {\"name\": \"item4\", \"label\": \"站到坐\", \"unit\": \"分\"}, {\"name\": \"item5\", \"label\": \"床椅转移\", \"unit\": \"分\"}, {\"name\": \"item6\", \"label\": \"闭眼站立\", \"unit\": \"分\"}, {\"name\": \"item7\", \"label\": \"双脚并拢站立\", \"unit\": \"分\"}, {\"name\": \"item8\", \"label\": \"上肢前伸\", \"unit\": \"分\"}, {\"name\": \"item9\", \"label\": \"弯腰拾物\", \"unit\": \"分\"}, {\"name\": \"item10\", \"label\": \"转身360度\", \"unit\": \"分\"}, {\"name\": \"item11\", \"label\": \"转身向后看\", \"unit\": \"分\"}, {\"name\": \"item12\", \"label\": \"交替踏凳\", \"unit\": \"分\"}, {\"name\": \"item13\", \"label\": \"单腿站立\", \"unit\": \"分\"}, {\"name\": \"item14\", \"label\": \"站立时双脚交替\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": ">45低风险，35-45中风险，<35高风险。", "PinyinCode": "BERG PHLB", "PinyinFull": "Berg pinghengliangbiao"}, {"CalcId": "CALC-090", "CalcName": "Fugl-Meyer 评分", "Category": "功能评估", "Description": "评估脑卒中后运动功能，总分0-100分（上肢66，下肢34），分数越高功能越好。", "Formula": "{upper}+{lower}", "InputParams": "[{\"name\": \"upper\", \"label\": \"上肢运动功能得分\", \"unit\": \"分\"}, {\"name\": \"lower\", \"label\": \"下肢运动功能得分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "总分100分，分数越高运动功能越好。", "PinyinCode": "FUGL-MEYER PF", "PinyinFull": "Fugl-Meyer pingfen"}, {"CalcId": "CALC-091", "CalcName": "Ashworth 肌张力分级", "Category": "神经", "Description": "评估肌张力等级，0-4级，分数越高肌张力越高。", "Formula": "{grade}", "InputParams": "[{\"name\": \"grade\", \"label\": \"肌张力等级（0-4）\", \"unit\": \"级\"}]", "ResultUnit": "级", "RefRange": "0=无肌张力增高，1=轻度增高，2=明显增高，3=严重增高，4=僵硬。", "PinyinCode": "ASHWORTH JZLFJ", "PinyinFull": "Ashworth jizhanglifenji"}, {"CalcId": "CALC-092", "CalcName": "MRS 改良Rankin评分", "Category": "评分", "Description": "评估脑卒中患者神经功能恢复状况的常用量表，0-6分，分数越高残疾程度越重。", "Formula": "{score}", "InputParams": "[{\"name\": \"score\", \"label\": \"评分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-6分，0=完全无症状，1=无明显残疾，2=轻度残疾，3=中度残疾，4=中重度残疾，5=重度残疾，6=死亡", "PinyinCode": "MRS GLRANKINPF", "PinyinFull": "MRS gailiangRankinpingfen"}, {"CalcId": "CALC-093", "CalcName": "TIA 风险评估 (ABCD2)", "Category": "评分", "Description": "用于短暂性脑缺血发作（TIA）后早期卒中风险评估，总分0-7分。", "Formula": "{age}+{bp}+{clinical}+{duration}+{diabetes}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄≥60岁\", \"unit\": \"分\"}, {\"name\": \"bp\", \"label\": \"血压≥140/90mmHg\", \"unit\": \"分\"}, {\"name\": \"clinical\", \"label\": \"临床表现\", \"unit\": \"分\"}, {\"name\": \"duration\", \"label\": \"持续时间\", \"unit\": \"分\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-7分，低危0-3分，中危4-5分，高危6-7分", "PinyinCode": "TIA FXPG (ABCD2)", "PinyinFull": "TIA fengxianpinggu (ABCD2)"}, {"CalcId": "CALC-094", "CalcName": "ESRS 卒中风险评分", "Category": "评分", "Description": "评估缺血性卒中患者复发风险的评分工具，总分0-9分。", "Formula": "{hypertension}+{diabetes}+{mi}+{cardiac}+{pvd}+{smoking}+{prior_stroke}+{age}", "InputParams": "[{\"name\": \"hypertension\", \"label\": \"高血压\", \"unit\": \"分\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病\", \"unit\": \"分\"}, {\"name\": \"mi\", \"label\": \"心肌梗死\", \"unit\": \"分\"}, {\"name\": \"cardiac\", \"label\": \"其他心脏病\", \"unit\": \"分\"}, {\"name\": \"pvd\", \"label\": \"外周动脉疾病\", \"unit\": \"分\"}, {\"name\": \"smoking\", \"label\": \"吸烟\", \"unit\": \"分\"}, {\"name\": \"prior_stroke\", \"label\": \"既往卒中\", \"unit\": \"分\"}, {\"name\": \"age\", \"label\": \"年龄\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-9分，分数越高复发风险越大", "PinyinCode": "ESRS ZZFXPF", "PinyinFull": "ESRS zuzhongfengxianpingfen"}, {"CalcId": "CALC-095", "CalcName": "SPI-II 评分", "Category": "评分", "Description": "用于评估缺血性卒中患者长期复发风险的评分，总分0-15分。", "Formula": "{age}+{cardiac}+{stroke}+{hypertension}+{diabetes}+{mi}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄>65岁\", \"unit\": \"分\"}, {\"name\": \"cardiac\", \"label\": \"充血性心力衰竭\", \"unit\": \"分\"}, {\"name\": \"stroke\", \"label\": \"卒中或TIA史\", \"unit\": \"分\"}, {\"name\": \"hypertension\", \"label\": \"高血压\", \"unit\": \"分\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病\", \"unit\": \"分\"}, {\"name\": \"mi\", \"label\": \"心肌梗死\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-15分，分数越高风险越高", "PinyinCode": "SPI-II PF", "PinyinFull": "SPI-II pingfen"}, {"CalcId": "CALC-096", "CalcName": "HANK 评分", "Category": "评分", "Description": "用于评估急性缺血性卒中患者出血转化的风险，总分0-5分。", "Formula": "{age}+{glucose}+{nihss}+{af}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄>60岁\", \"unit\": \"分\"}, {\"name\": \"glucose\", \"label\": \"血糖>11.1mmol/L\", \"unit\": \"分\"}, {\"name\": \"nihss\", \"label\": \"NIHSS评分>10\", \"unit\": \"分\"}, {\"name\": \"af\", \"label\": \"房颤\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-5分，分数越高出血风险越大", "PinyinCode": "HANK PF", "PinyinFull": "HANK pingfen"}, {"CalcId": "CALC-097", "CalcName": "CHANCE 评分", "Category": "评分", "Description": "用于评估轻型卒中或高危TIA患者早期卒中复发风险，总分0-9分。", "Formula": "{age}+{bp}+{diabetes}+{duration}+{nihss}", "InputParams": "[{\"name\": \"age\", \"label\": \"年龄≥60岁\", \"unit\": \"分\"}, {\"name\": \"bp\", \"label\": \"血压≥140/90mmHg\", \"unit\": \"分\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病\", \"unit\": \"分\"}, {\"name\": \"duration\", \"label\": \"症状持续时间≥10分钟\", \"unit\": \"分\"}, {\"name\": \"nihss\", \"label\": \"NIHSS评分≥1\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-9分，分数越高复发风险越大", "PinyinCode": "CHANCE PF", "PinyinFull": "CHANCE pingfen"}, {"CalcId": "CALC-098", "CalcName": "TOAST 分型", "Category": "评分", "Description": "缺血性卒中亚型分类，基于临床表现和检查结果，分为5型。", "Formula": "{type}", "InputParams": "[{\"name\": \"type\", \"label\": \"分型编号\", \"unit\": \"\"}]", "ResultUnit": "", "RefRange": "1=大动脉粥样硬化型，2=心源性栓塞型，3=小动脉闭塞型，4=其他明确病因型，5=不明原因型", "PinyinCode": "TOAST FX", "PinyinFull": "TOAST fenxing"}, {"CalcId": "CALC-099", "CalcName": "NIHSS 简化版", "Category": "评分", "Description": "简化版美国国立卫生研究院卒中量表，评估神经功能缺损程度，总分0-42分。", "Formula": "{consciousness}+{gaze}+{visual}+{facial}+{motor_arm}+{motor_leg}+{ataxia}+{sensory}+{language}+{dysarthria}+{neglect}", "InputParams": "[{\"name\": \"consciousness\", \"label\": \"意识水平\", \"unit\": \"分\"}, {\"name\": \"gaze\", \"label\": \"凝视\", \"unit\": \"分\"}, {\"name\": \"visual\", \"label\": \"视野\", \"unit\": \"分\"}, {\"name\": \"facial\", \"label\": \"面瘫\", \"unit\": \"分\"}, {\"name\": \"motor_arm\", \"label\": \"上肢运动\", \"unit\": \"分\"}, {\"name\": \"motor_leg\", \"label\": \"下肢运动\", \"unit\": \"分\"}, {\"name\": \"ataxia\", \"label\": \"共济失调\", \"unit\": \"分\"}, {\"name\": \"sensory\", \"label\": \"感觉\", \"unit\": \"分\"}, {\"name\": \"language\", \"label\": \"语言\", \"unit\": \"分\"}, {\"name\": \"dysarthria\", \"label\": \"构音障碍\", \"unit\": \"分\"}, {\"name\": \"neglect\", \"label\": \"忽视\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-42分，分数越高神经功能缺损越重", "PinyinCode": "NIHSS JHB", "PinyinFull": "NIHSS jianhuaban"}, {"CalcId": "CALC-100", "CalcName": "Hunt and Hess", "Category": "评分", "Description": "用于评估动脉瘤性蛛网膜下腔出血的临床严重程度，分级Ⅰ-Ⅴ级。", "Formula": "{grade}", "InputParams": "[{\"name\": \"grade\", \"label\": \"分级\", \"unit\": \"\"}]", "ResultUnit": "", "RefRange": "Ⅰ级：无症状或轻微头痛；Ⅱ级：中重度头痛、颈强直；Ⅲ级：嗜睡、意识模糊；Ⅳ级：昏迷、偏瘫；Ⅴ级：深昏迷、去脑强直", "PinyinCode": "HUNT AND HESS", "PinyinFull": "Hunt and Hess"}, {"CalcId": "CALC-101", "CalcName": "WFNS 分级", "Category": "评分", "Description": "世界神经外科联合会分级，用于蛛网膜下腔出血的预后评估，Ⅰ-Ⅴ级。", "Formula": "{grade}", "InputParams": "[{\"name\": \"grade\", \"label\": \"分级\", \"unit\": \"\"}]", "ResultUnit": "", "RefRange": "Ⅰ级：GCS 15分，无运动障碍；Ⅱ级：GCS 13-14分，无运动障碍；Ⅲ级：GCS 13-14分，有运动障碍；Ⅳ级：GCS 7-12分；Ⅴ级：GCS 3-6分", "PinyinCode": "WFNS FJ", "PinyinFull": "WFNS fenji"}, {"CalcId": "CALC-102", "CalcName": "Glasgow Outcome Scale", "Category": "评分", "Description": "评估脑损伤患者的预后，分为5个等级。", "Formula": "{score}", "InputParams": "[{\"name\": \"score\", \"label\": \"评分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "1=死亡，2=植物状态，3=重度残疾，4=中度残疾，5=恢复良好", "PinyinCode": "GLASGOW OUTCOME SCALE", "PinyinFull": "Glasgow Outcome Scale"}, {"CalcId": "CALC-103", "CalcName": "Coma Recovery Scale-Revised", "Category": "评分", "Description": "评估意识障碍患者（如植物状态）的恢复程度，总分0-23分。", "Formula": "{auditory}+{visual}+{motor}+{oromotor}+{communication}+{arousal}", "InputParams": "[{\"name\": \"auditory\", \"label\": \"听觉功能\", \"unit\": \"分\"}, {\"name\": \"visual\", \"label\": \"视觉功能\", \"unit\": \"分\"}, {\"name\": \"motor\", \"label\": \"运动功能\", \"unit\": \"分\"}, {\"name\": \"oromotor\", \"label\": \"口运动功能\", \"unit\": \"分\"}, {\"name\": \"communication\", \"label\": \"交流功能\", \"unit\": \"分\"}, {\"name\": \"arousal\", \"label\": \"觉醒功能\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-23分，分数越高意识水平越高", "PinyinCode": "COMA RECOVERY SCALE-REVISED", "PinyinFull": "Coma Recovery Scale-Revised"}, {"CalcId": "CALC-104", "CalcName": "JFK Coma Recovery Scale", "Category": "评分", "Description": "用于评估昏迷患者的恢复潜力，总分0-23分。", "Formula": "{auditory}+{visual}+{motor}+{oromotor}+{communication}+{arousal}", "InputParams": "[{\"name\": \"auditory\", \"label\": \"听觉功能\", \"unit\": \"分\"}, {\"name\": \"visual\", \"label\": \"视觉功能\", \"unit\": \"分\"}, {\"name\": \"motor\", \"label\": \"运动功能\", \"unit\": \"分\"}, {\"name\": \"oromotor\", \"label\": \"口运动功能\", \"unit\": \"分\"}, {\"name\": \"communication\", \"label\": \"交流功能\", \"unit\": \"分\"}, {\"name\": \"arousal\", \"label\": \"觉醒功能\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-23分，分数越高恢复越好", "PinyinCode": "JFK COMA RECOVERY SCALE", "PinyinFull": "JFK Coma Recovery Scale"}, {"CalcId": "CALC-105", "CalcName": "Four Score 昏迷评分", "Category": "评分", "Description": "评估昏迷程度，包括眼反应、运动反应、脑干反射和呼吸，总分0-16分。", "Formula": "{eye}+{motor}+{brainstem}+{respiration}", "InputParams": "[{\"name\": \"eye\", \"label\": \"眼反应\", \"unit\": \"分\"}, {\"name\": \"motor\", \"label\": \"运动反应\", \"unit\": \"分\"}, {\"name\": \"brainstem\", \"label\": \"脑干反射\", \"unit\": \"分\"}, {\"name\": \"respiration\", \"label\": \"呼吸\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-16分，分数越低昏迷越深", "PinyinCode": "FOUR SCORE HMPF", "PinyinFull": "Four Score hunmipingfen"}, {"CalcId": "CALC-106", "CalcName": "NCS 评分", "Category": "评分", "Description": "用于评估神经危重症患者的意识水平，总分0-20分。", "Formula": "{eye}+{motor}+{brainstem}+{respiration}", "InputParams": "[{\"name\": \"eye\", \"label\": \"眼反应\", \"unit\": \"分\"}, {\"name\": \"motor\", \"label\": \"运动反应\", \"unit\": \"分\"}, {\"name\": \"brainstem\", \"label\": \"脑干反射\", \"unit\": \"分\"}, {\"name\": \"respiration\", \"label\": \"呼吸\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "0-20分，分数越低意识障碍越重", "PinyinCode": "NCS PF", "PinyinFull": "NCS pingfen"}, {"CalcId": "CALC-107", "CalcName": "RASS 镇静评分", "Category": "评分", "Description": "Richmond躁动-镇静量表，评估ICU患者镇静深度和躁动程度，范围-5至+4。", "Formula": "{score}", "InputParams": "[{\"name\": \"score\", \"label\": \"评分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "-5至+4，0=清醒平静，负值表示镇静，正值表示躁动", "PinyinCode": "RASS ZJPF", "PinyinFull": "RASS zhenjingpingfen"}, {"CalcId": "CALC-108", "CalcName": "SAS 镇静评分", "Category": "评分", "Description": "Riker镇静-躁动评分，评估ICU患者镇静水平，范围1-7分。", "Formula": "{score}", "InputParams": "[{\"name\": \"score\", \"label\": \"评分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "1=不可唤醒，2=非常镇静，3=镇静，4=安静合作，5=躁动，6=非常躁动，7=危险躁动", "PinyinCode": "SAS ZJPF", "PinyinFull": "SAS zhenjingpingfen"}, {"CalcId": "CALC-109", "CalcName": "CAM-ICU 谵妄评估", "Category": "评分", "Description": "ICU患者谵妄评估工具，基于4个特征判断谵妄存在与否。", "Formula": "{feature1}+{feature2}+{feature3}+{feature4}", "InputParams": "[{\"name\": \"feature1\", \"label\": \"急性起病或波动性病程\", \"unit\": \"分\"}, {\"name\": \"feature2\", \"label\": \"注意力缺损\", \"unit\": \"分\"}, {\"name\": \"feature3\", \"label\": \"思维紊乱\", \"unit\": \"分\"}, {\"name\": \"feature4\", \"label\": \"意识水平改变\", \"unit\": \"分\"}]", "ResultUnit": "", "RefRange": "特征1和2阳性，加上特征3或4阳性，则谵妄诊断成立", "PinyinCode": "CAM-ICU ZWPG", "PinyinFull": "CAM-ICU zhanwangpinggu"}, {"CalcId": "CALC-110", "CalcName": "ICU delirium", "Category": "评分", "Description": "ICU谵妄筛查表，用于快速评估谵妄风险，总分0-8分。", "Formula": "{acute}+{attention}+{disorganized}+{consciousness}", "InputParams": "[{\"name\": \"acute\", \"label\": \"急性起病\", \"unit\": \"分\"}, {\"name\": \"attention\", \"label\": \"注意力障碍\", \"unit\": \"分\"}, {\"name\": \"disorganized\", \"label\": \"思维紊乱\", \"unit\": \"分\"}, {\"name\": \"consciousness\", \"label\": \"意识水平改变\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "≥4分提示谵妄", "PinyinCode": "ICU DELIRIUM", "PinyinFull": "ICU delirium"}, {"CalcId": "CALC-111", "CalcName": "Richmond agitation sedation", "Category": "评分", "Description": "Richmond躁动-镇静量表（RASS），评估镇静深度和躁动程度。", "Formula": "{score}", "InputParams": "[{\"name\": \"score\", \"label\": \"评分\", \"unit\": \"分\"}]", "ResultUnit": "分", "RefRange": "-5至+4，0=清醒平静，负值表示镇静，正值表示躁动", "PinyinCode": "RICHMOND AGITATION SEDATION", "PinyinFull": "Richmond agitation sedation"}, {"CalcId": "CALC-112", "CalcName": "CHA2DS2-VASc", "Category": "评分", "Description": "用于非瓣膜性房颤患者卒中风险评估，指导抗凝治疗决策。", "Formula": "{congestive_heart_failure} + {hypertension} + {age_65_74} + 2 * {age_75_plus} + {diabetes} + 2 * {stroke_tia_thromboembolism} + {vascular_disease} + {sex_female}", "InputParams": "[{\"name\": \"congestive_heart_failure\", \"label\": \"充血性心力衰竭\", \"unit\": \"是=1，否=0\"}, {\"name\": \"hypertension\", \"label\": \"高血压\", \"unit\": \"是=1，否=0\"}, {\"name\": \"age_65_74\", \"label\": \"年龄65-74岁\", \"unit\": \"是=1，否=0\"}, {\"name\": \"age_75_plus\", \"label\": \"年龄≥75岁\", \"unit\": \"是=2，否=0\"}, {\"name\": \"diabetes\", \"label\": \"糖尿病\", \"unit\": \"是=1，否=0\"}, {\"name\": \"stroke_tia_thromboembolism\", \"label\": \"卒中/TIA/血栓栓塞史\", \"unit\": \"是=2，否=0\"}, {\"name\": \"vascular_disease\", \"label\": \"血管疾病\", \"unit\": \"是=1，否=0\"}, {\"name\": \"sex_female\", \"label\": \"女性\", \"unit\": \"是=1，否=0\"}]", "ResultUnit": "分", "RefRange": "0-1分：低风险；2-3分：中风险；≥4分：高风险。建议根据评分决定抗凝策略。", "PinyinCode": "CHA2DS2-VASC", "PinyinFull": "CHA2DS2-VASc"}];
 CALCS.push({"CalcId": "KZ", "CalcName": "川崎病 冠脉Z值", "Category": "川崎病/冠脉", "Description": "8 种方法（LMS/Zorji/Kurotobi/Tan/AHA/McCrindle/Olivieri/Dallaire）计算冠状动脉 Z 值，忠实移植自 cals.medlive.cn。", "Custom": "kdz", "PinyinCode": "QSKZ", "PinyinFull": "chuqibingguanzhuangdongmaiZzhi", "InputParams": [], "Formula": "", "ResultUnit": "", "RefRange": ""});
@@ -377,31 +401,75 @@ function kdzRun(){
 }
 </script>
 <script>
+const GROUPS = [
+  {id:'g_diag',  label:'疾病诊疗', icon:'🩺'},
+  {id:'g_drug',  label:'合理用药', icon:'💊'},
+  {id:'g_safe',  label:'用药安全', icon:'🛡'},
+  {id:'g_lab',   label:'检验检查', icon:'🧪'},
+  {id:'g_ops',   label:'操作文书', icon:'🛠'},
+  {id:'g_code',  label:'编码管理', icon:'🏷'},
+  {id:'g_tcm',   label:'中医',    icon:'🌿'},
+  {id:'g_quick', label:'速查工具', icon:'⚡'}
+];
 const MODULES = [
-  {id:'diseases',   label:'疾病库', icon:'🩺'},
-  {id:'drugs',      label:'用药',   icon:'💊'},
-  {id:'drugs_peds', label:'儿科用药', icon:'🧸'},
-  {id:'pump_drugs', label:'泵注药', icon:'💉'},
-  {id:'drug_skin',  label:'皮试配置', icon:'🧪'},
-  {id:'drug_infu',  label:'配伍禁忌', icon:'⚠️'},
-  {id:'drug_emerg', label:'急救药品', icon:'🚑'},
-  {id:'drug_abx',   label:'抗菌指南', icon:'🦠'},
-  {id:'drug_specpop',label:'特殊人群', icon:'👶'},
-  {id:'drug_commondz',label:'常见病指南', icon:'📑'},
-  {id:'drug_zyinj', label:'中成药注射', icon:'💧'},
-  {id:'drug_derm',  label:'皮肤科用药', icon:'🧴'},
-  {id:'drug_ophth', label:'眼科用药', icon:'👁️'},
-  {id:'labs',       label:'检验',   icon:'🧪'},
-  {id:'symptoms',   label:'症状',   icon:'🌡️'},
-  {id:'procedures', label:'操作',   icon:'🛠️'},
-  {id:'documents',  label:'文书',   icon:'📄'},
-  {id:'templates',  label:'模板',   icon:'📋'},
-  {id:'guidelines', label:'指南',   icon:'📚'},
-  {id:'calc',       label:'计算器', icon:'🧮'}
+  {id:'diseases',    label:'疾病库',      icon:'🩺', group:'g_diag'},
+  {id:'ped_diseases',label:'儿科疾病库',   icon:'🧒', group:'g_diag'},
+  {id:'symptoms',    label:'症状',        icon:'🌡', group:'g_diag'},
+  {id:'ped_symptoms',label:'儿科症状鉴别', icon:'🔬', group:'g_diag'},
+  {id:'guidelines',  label:'指南',        icon:'📚', group:'g_diag'},
+
+  {id:'drugs',        label:'用药',        icon:'💊', group:'g_drug'},
+  {id:'drugs_peds',   label:'儿科用药',     icon:'🧸', group:'g_drug'},
+  {id:'pump_drugs',   label:'泵注药',       icon:'💉', group:'g_drug'},
+  {id:'drug_zyinj',   label:'中成药注射',    icon:'💧', group:'g_drug'},
+  {id:'drug_tcm_oral',label:'中成药口服',    icon:'🍵', group:'g_drug'},
+  {id:'drug_derm',    label:'皮肤科外用药',  icon:'🧴', group:'g_drug'},
+  {id:'drug_ophth',   label:'眼科外用药',    icon:'👁', group:'g_drug'},
+  {id:'drug_emerg',   label:'急救药品',      icon:'🚑', group:'g_drug'},
+
+  {id:'drug_abx',        label:'抗菌指南',   icon:'🦠', group:'g_safe'},
+  {id:'abx',             label:'抗菌速查',   icon:'🔎', group:'g_safe'},
+  {id:'antibiotic_level',label:'抗菌分级',   icon:'📊', group:'g_safe'},
+  {id:'drug_specpop',    label:'特殊人群',   icon:'👶', group:'g_safe'},
+  {id:'drug_commondz',   label:'常见病指南', icon:'📑', group:'g_safe'},
+  {id:'drug_infu',       label:'配伍禁忌',   icon:'⚠️', group:'g_safe'},
+  {id:'infusion_conflict',label:'输液配伍',  icon:'🚫', group:'g_safe'},
+  {id:'drug_skin',       label:'皮试配置',   icon:'🧪', group:'g_safe'},
+  {id:'skin_test',       label:'皮试规程',   icon:'📋', group:'g_safe'},
+  {id:'highrisk_drugs',  label:'高危药品',   icon:'☠️', group:'g_safe'},
+  {id:'drug_allergy',    label:'药物过敏',   icon:'🤧', group:'g_safe'},
+  {id:'pregnancy_drugs', label:'妊娠用药',   icon:'🤰', group:'g_safe'},
+  {id:'pharmg',          label:'基因用药',   icon:'🧬', group:'g_safe'},
+
+  {id:'labs',            label:'检验',      icon:'🧪', group:'g_lab'},
+  {id:'critical_values', label:'危急值',     icon:'🚨', group:'g_lab'},
+  {id:'clinical_values', label:'参考值',     icon:'📏', group:'g_lab'},
+
+  {id:'procedures',  label:'操作',      icon:'🛠', group:'g_ops'},
+  {id:'documents',   label:'文书',      icon:'📄', group:'g_ops'},
+  {id:'templates',   label:'模板',      icon:'📋', group:'g_ops'},
+  {id:'first_aid',   label:'抢救流程',   icon:'🚑', group:'g_ops'},
+
+  {id:'drg',   label:'DRG 查询', icon:'🏷', group:'g_code'},
+  {id:'icd10', label:'ICD-10',  icon:'🔢', group:'g_code'},
+
+  {id:'tcm_herbs',   label:'中药',     icon:'🌿', group:'g_tcm'},
+  {id:'tcm_formula', label:'方剂',     icon:'🍶', group:'g_tcm'},
+  {id:'acupoints',   label:'针灸穴位', icon:'📍', group:'g_tcm'},
+
+  {id:'growth',  label:'生长曲线',   icon:'📈', group:'g_quick', special:'growth'},
+  {id:'vaccine', label:'疫苗程序',   icon:'💉', group:'g_quick'},
+  {id:'abbr',    label:'医学缩写',   icon:'🔤', group:'g_quick'},
+  {id:'derm',    label:'皮肤病速查', icon:'🩹', group:'g_quick'},
+  {id:'calc',    label:'计算器',     icon:'🧮', group:'g_quick', special:'calc'}
 ];
 
 /* ---------- 模块顺序持久化（拖拽排序） ---------- */
-const MODULE_ORDER_KEY = 'clinical_module_order_v1';
+const MODULE_ORDER_KEY = 'clinical_module_order_v2';
+const MODULE_COLLAPSE_KEY = 'clinical_module_collapse_v1';
+let COLLAPSED = {};
+(function(){ try{ COLLAPSED = JSON.parse(localStorage.getItem(MODULE_COLLAPSE_KEY)||'{}')||{}; }catch(e){ COLLAPSED={}; } })();
+function saveCollapsed(){ try{ localStorage.setItem(MODULE_COLLAPSE_KEY, JSON.stringify(COLLAPSED)); }catch(e){} }
 function applyModuleOrder(){
   let saved=null;
   try{ saved=JSON.parse(localStorage.getItem(MODULE_ORDER_KEY)||'null'); }catch(e){}
@@ -424,14 +492,41 @@ function resetModuleOrder(){
 applyModuleOrder();
 
 const DB = (window.CLINICAL_DB && typeof window.CLINICAL_DB==='object') ? window.CLINICAL_DB : {};
-MODULES.forEach(m=>{ if(!Array.isArray(DB[m.id])) DB[m.id]=[]; });
-(function(){
-  const total = MODULES.reduce((s,m)=>s+DB[m.id].length,0);
-  if(total===0){
-    const d=document.getElementById('detail');
-    if(d) d.innerHTML='<div class="warnbox">未加载到数据。请将 data/ 目录（运行 _update_data.py 生成）与本文件放在同一文件夹，然后刷新页面。</div>';
-  }
-})();
+const META = window.CLINICAL_META || {counts:{}, sizes:{}, lazy:[], notes:{}};
+const SPECIAL = window.CLINICAL_SPECIAL || {};
+let MODMAP = {};
+function rebuildModMap(){ MODMAP={}; MODULES.forEach(function(m){ MODMAP[m.id]=m; }); }
+function isLazy(id){ return !!META.lazy && META.lazy.indexOf(id)>=0; }
+function countOf(id){ return Array.isArray(DB[id]) ? DB[id].length : (META.counts && META.counts[id]!=null ? META.counts[id] : 0); }
+
+/* ---------- 大模块按需加载 ---------- */
+const _pending = {};
+function ensureModule(id, cb){
+  cb = cb || function(){};
+  if(Array.isArray(DB[id])){ cb(); return; }
+  if(!isLazy(id)){ DB[id]=[]; cb(); return; }
+  if(_pending[id]){ _pending[id].push(cb); return; }
+  _pending[id]=[cb];
+  const listEl=document.getElementById('list'), bodyEl=document.getElementById('dbody'), cntEl=document.getElementById('cnt');
+  if(cntEl) cntEl.textContent='加载中…';
+  if(listEl) listEl.innerHTML='<div class="empty">正在加载 <b>'+esc((MODMAP[id]&&MODMAP[id].label)||id)+'</b> 数据…</div>';
+  if(bodyEl) bodyEl.innerHTML='<div class="empty">正在加载数据…</div>';
+  const s=document.createElement('script');
+  s.src='data/'+id+'.js';
+  s.onload=function(){
+    const q=_pending[id]||[]; delete _pending[id];
+    renderSide(); q.forEach(function(f){ f(); });
+  };
+  s.onerror=function(){
+    const q=_pending[id]||[]; delete _pending[id];
+    DB[id]=[];
+    const el=document.getElementById('list');
+    if(el) el.innerHTML='<div class="warnbox">数据加载失败：<code>data/'+id+'.js</code> 未找到。<br>请确认 <code>data</code> 目录与本 HTML 在同一文件夹下。</div>';
+    renderSide(); q.forEach(function(f){ f(); });
+  };
+  document.head.appendChild(s);
+}
+rebuildModMap();
 
 let state = { mod:'diseases', cat:'__ALL__', q:'', sel:-1 };
 
@@ -466,24 +561,55 @@ function subText(r){
 }
 function renderSide(){
   const el=document.getElementById('side');
-  let html = '<div class="reset" id="modReset" title="清除自定义顺序，恢复默认">'
-    + '<span style="font-size:13px">↻</span><span>恢复默认顺序</span></div>';
-  html += MODULES.map(m=>{
-    const n = (m.id==='calc') ? (typeof CALCS!=='undefined'?CALCS.length:0) : (DB[m.id]?DB[m.id].length:0);
-    return '<div class="mi'+(m.id===state.mod?' active':'')+'" draggable="true" data-mod="'+m.id+'" title="按住 ⋮⋮ 拖动可调整顺序">'
-      +'<span class="grip" aria-hidden="true">⋮⋮</span>'
-      +'<span class="ic">'+m.icon+'</span><span>'+m.label+'</span><span class="ct">'+n+'</span></div>';
-  }).join('');
+  let html = '<div class="reset" id="modReset" title="清除自定义顺序与折叠状态，恢复默认">'
+    + '<span style="font-size:13px">↻</span><span>恢复默认布局</span></div>';
+  GROUPS.forEach(function(g){
+    const ms = MODULES.filter(function(m){ return m.group===g.id; });
+    if(!ms.length) return;
+    const closed = !!COLLAPSED[g.id];
+    html += '<div class="grp'+(closed?' closed':'')+'" data-g="'+g.id+'" title="点击可折叠 / 展开该分组">'
+      + '<span class="arw">▼</span><span class="gi">'+g.icon+'</span><span>'+esc(g.label)+'</span>'
+      + '<span class="gn">'+ms.length+'</span></div>';
+    ms.forEach(function(m){
+      const lz = isLazy(m.id) && !Array.isArray(DB[m.id]);
+      const loading = !!_pending[m.id];
+      const title = lz ? '点击后首次加载数据' : ('按住 ⋮⋮ 拖动可调整顺序');
+      html += '<div class="mi sub'+(m.id===state.mod?' active':'')+(closed?' hidden':'')+(loading?' loading':'')
+        +'" draggable="true" data-mod="'+m.id+'" data-g="'+g.id+'" title="'+title+'">'
+        +'<span class="grip" aria-hidden="true">⋮⋮</span>'
+        +'<span class="ic">'+m.icon+'</span><span>'+esc(m.label)+'</span>'
+        +'<span class="ct'+(lz?' cold':'')+'">'+(loading?'…':countOf(m.id))+'</span></div>';
+    });
+  });
   el.innerHTML = html || '<div class="side-empty">暂无可用模块</div>';
   document.getElementById('modReset').onclick = function(){
-    if(confirm('确定要将侧边栏模块顺序恢复到默认吗？')) resetModuleOrder();
+    if(confirm('确定要将侧边栏的顺序和折叠状态恢复到默认吗？')){
+      try{ localStorage.removeItem(MODULE_ORDER_KEY); localStorage.removeItem(MODULE_COLLAPSE_KEY); }catch(e){}
+      location.reload();
+    }
   };
-  el.querySelectorAll('.mi').forEach(d=>{
-    d.onclick = function(ev){
-      // 如果刚完成拖拽，忽略 click
+  el.querySelectorAll('.grp').forEach(function(gd){
+    gd.onclick = function(){
+      const gid=gd.dataset.g;
+      COLLAPSED[gid] = !COLLAPSED[gid];
+      saveCollapsed();
+      gd.classList.toggle('closed', COLLAPSED[gid]);
+      let n=gd.nextElementSibling;
+      while(n){
+        if(n.classList.contains('grp')) break;
+        if(n.classList.contains('mi')) n.classList.toggle('hidden', COLLAPSED[gid]);
+        n=n.nextElementSibling;
+      }
+    };
+  });
+  el.querySelectorAll('.mi').forEach(function(d){
+    d.onclick = function(){
       if(d._suppressClick){ d._suppressClick=false; return; }
-      state.mod=d.dataset.mod; state.cat='__ALL__'; state.q=''; state.sel=-1;
-      document.getElementById('q').value=''; renderSide(); renderChips(); renderList(); renderDetail();
+      const id=d.dataset.mod;
+      state.mod=id; state.cat='__ALL__'; state.q=''; state.sel=-1;
+      const qi=document.getElementById('q'); if(qi) qi.value='';
+      renderSide();
+      ensureModule(id, function(){ renderChips(); renderList(); renderDetail(); });
     };
     bindModuleDrag(d, el);
   });
@@ -533,14 +659,23 @@ function rebuildModules(idOrder){
   const map = new Map(MODULES.map(m=>[m.id,m]));
   const next=[];
   idOrder.forEach(function(id){ const m=map.get(id); if(m){ next.push(m); map.delete(id); } });
-  // 任何未列入的（如后期 push 的 ped_* 模块）追加到末尾
   map.forEach(function(m){ next.push(m); });
+  // 拖拽后以 DOM 中所属的一级分组为准，实现跨组移动
+  const side=document.getElementById('side');
+  if(side){
+    const gmap={};
+    side.querySelectorAll('.mi').forEach(function(x){ gmap[x.dataset.mod]=x.dataset.g; });
+    next.forEach(function(m){ if(gmap[m.id]) m.group=gmap[m.id]; });
+  }
   MODULES.length=0;
   next.forEach(function(m){ MODULES.push(m); });
+  rebuildModMap();
   saveModuleOrder();
 }
 function renderChips(){
   const el=document.getElementById('chips');
+  if(!el) return;
+  if(!Array.isArray(DB[state.mod])){ el.innerHTML='<option value="__ALL__">全部</option>'; return; }
   const cats = catsOf(state.mod);
   let html = '<option value="__ALL__"'+(state.cat==='__ALL__'?' selected':'')+'>全部</option>';
   html += cats.map(c=>'<option value="'+esc(c).replace(/"/g,'&quot;')+'"'+(state.cat===c?' selected':'')+'>'+esc(c)+'</option>').join('');
@@ -548,7 +683,15 @@ function renderChips(){
   el.onchange = ()=>{ state.cat=el.value; state.sel=-1; renderList(); renderDetail(); };
 }
 function renderList(){
-  if(state.mod==='calc'){ renderCalcList(); return; }
+  const mm = MODMAP[state.mod];
+  document.body.classList.toggle('mod-growth', !!(mm && mm.special==='growth'));
+  if(mm && mm.special==='calc'){ renderCalcList(); return; }
+  if(mm && mm.special==='growth'){ renderGrowthList(); return; }
+  if(!Array.isArray(DB[state.mod])){
+    document.getElementById('list').innerHTML='<div class="empty">正在加载数据…</div>';
+    const c=document.getElementById('cnt'); if(c) c.textContent='加载中';
+    return;
+  }
   const el=document.getElementById('list');
   const arr = listOf(state.mod);
   document.getElementById('cnt').textContent = '共 '+arr.length+' 条';
@@ -557,14 +700,20 @@ function renderList(){
     +'<div class="n">'+esc(r.name)+'</div>'
     +(subText(r)?'<div class="s">'+esc(subText(r))+'</div>':'')+'</div>').join('');
   el.querySelectorAll('.item').forEach(d=>d.onclick=()=>{ state.sel=+d.dataset.i; renderList();
-    document.getElementById('dbody').innerHTML = RENDER[state.mod](arr[state.sel]); openDetail(); window.scrollTo(0,0); });
+    document.getElementById('dbody').innerHTML = (RENDER[state.mod]||genAuto())(arr[state.sel]); openDetail(); window.scrollTo(0,0); });
 }
 function renderDetail(){
-  if(state.mod==='calc'){ renderCalcDetail(); return; }
+  const mm = MODMAP[state.mod];
+  if(mm && mm.special==='calc'){ renderCalcDetail(); return; }
+  if(mm && mm.special==='growth'){ renderGrowthDetail(); return; }
+  if(!Array.isArray(DB[state.mod])){
+    document.getElementById('dbody').innerHTML='<div class="empty">正在加载数据…</div>';
+    return;
+  }
   const el=document.getElementById('dbody');
   const arr = listOf(state.mod);
   if(state.sel<0 || !arr[state.sel]){ el.innerHTML='<div class="empty">请选择左侧模块与条目</div>'; closeDetail(); return; }
-  el.innerHTML = RENDER[state.mod](arr[state.sel]); openDetail();
+  el.innerHTML = (RENDER[state.mod]||genAuto())(arr[state.sel]); openDetail();
 }
 /* ---------- section helpers ---------- */
 function listHTML(v){ const a=asArr(v); if(!a.length) return '<p class="muted">—</p>';
@@ -610,23 +759,145 @@ function genRender(fieldMap){
 }
 const DRUG_EXTRA = {
   drug_skin:    [['浓度','concentration'],['剂量','dose'],['方法','method'],['观察','observe'],['注意事项','notes']],
-  drug_infu:    [['药品1','drug1'],['药品2','drug2'],['结果','result'],['原因','reason']],
-  drug_emerg:   [['规格','spec'],['剂量','dose'],['适应证','indication'],['注意事项','notes']],
+  drug_infu:    [['药品 1','drug1'],['药品 2','drug2'],['结果','result'],['原因','reason']],
+  drug_emerg:   [['规格','spec'],['剂量','dose'],['适应证','indication'],['不良反应','adverse'],['禁忌','contraindication'],['注意事项','notes']],
   drug_abx:     [['首选','first_choice'],['备选','alternative'],['疗程','duration'],['病原','pathogens'],['注意事项','notes']],
   drug_specpop: [['原则','principle'],['可用','safe'],['避免','avoid'],['调整','adjustment'],['注意事项','notes']],
   drug_commondz:[['分类','categories'],['一线','first_line'],['注意事项','notes']],
-  drug_zyinj:   [['规格','spec'],['用法','dose'],['适应证','indication'],['注意事项','notes']],
-  drug_derm:    [['规格','spec'],['用法','dose'],['适应证','indication'],['注意事项','notes']],
-  drug_ophth:   [['规格','spec'],['用法','dose'],['适应证','indication'],['注意事项','notes']]
+  drug_zyinj:   [['规格','spec'],['用法用量','dose'],['适应证','indication'],['不良反应','adverse'],['禁忌','contraindication'],['注意事项','notes']],
+  drug_derm:    [['规格','spec'],['用法用量','dose'],['适应证','indication'],['注意事项','notes']],
+  drug_ophth:   [['规格','spec'],['用法用量','dose'],['适应证','indication'],['注意事项','notes']],
+  drug_tcm_oral:[['规格','spec'],['用法用量','dose'],['适应证','indication'],['不良反应','adverse'],['禁忌','contraindication'],['相互作用','interaction'],['注意事项','notes']],
+  /* ----  新增速查表 ---- */
+  abx:               [['类别','cat'],['相关科室','dep'],['抗菌谱','spectrum'],['说明','note']],
+  antibiotic_level:  [['管理级别','level'],['处方权限','right'],['说明','note']],
+  infusion_conflict: [['配伍结果','reason'],['处理','handle']],
+  skin_test:         [['皮试液配制','prepare'],['观察与判断','observe'],['注意','note']],
+  highrisk_drugs:    [['风险点','risk'],['管理要点','point']],
+  drug_allergy:      [['交叉过敏','cross'],['处理原则','handle']],
+  pregnancy_drugs:   [['妊娠分级','level'],['依据','reason'],['说明','note']],
+  pharmg:            [['底物 / 相关药物','substrate'],['相关药物','drug'],['影响','effect'],['用药建议','action']],
+  critical_values:   [['危急值范围','value'],['临床意义','meaning'],['紧急处理','action']],
+  clinical_values:   [['参考范围','value'],['说明','note']],
+  first_aid:         [['快速识别','identify'],['处理步骤','steps'],['注意','notice']],
+  tcm_herbs:         [['性味','taste'],['归经','meridian'],['功效','effect'],['主治','ind'],['用法用量','usage'],['注意','note']],
+  tcm_formula:       [['分类','cat'],['组成','compose'],['功效','effect'],['主治','ind']],
+  acupoints:         [['归经','meridian'],['定位','locate'],['主治','ind'],['操作','op']],
+  abbr:              [['英文全称','full'],['中文含义','cn']],
+  derm:              [['皮损特点','lesion'],['好发部位','location'],['症状','symptom'],['诊断要点','diagnosis'],['治疗','treatment'],['注意','note']],
+  vaccine:           [['应种疫苗','vaccine'],['说明','note']]
 };
+
+/* ---------- 通用兜底渲染器：把记录里所有非空字段按顺序渲染出来 ---------- */
+function genAuto(){
+  const skip = {py:1, pinyin:1, name:1, category:1};
+  return function(r){
+    let h = header(r, r.category||'');
+    for(const k in r){
+      if(skip[k] || k.charAt(0)==='_') continue;
+      const v=r[k];
+      if(v==null || v==='' || (Array.isArray(v)&&!v.length)) continue;
+      h += sec(k, k, r, Array.isArray(v)?'list':'pre');
+    }
+    return h;
+  };
+}
+
+/* ================= DRG 渲染 ================= */
+function drgNum(v){ return (v==null||v==='')?'—':(Math.round(Number(v)*100)/100); }
+function drgMoney(v){ return (v==null||v===''||isNaN(Number(v)))?'—':'¥'+Number(v).toLocaleString('zh-CN'); }
+function drgRender(r){
+  const meta = (SPECIAL && SPECIAL.drg_meta) || {};
+  const mdcName = (meta.mdc_categories||[]).filter(function(x){ return x.code===r.mdc; })
+                    .map(function(x){ return x.name; })[0] || '';
+  const pv = state.drgPoint || 8000;
+  const pay = (Number(r.weight)||0) * pv;
+  let h = header(r, (r.code||'') + (mdcName?(' · '+mdcName):'') );
+  h += '<div class="drg-cards">'
+    + '<div class="dc"><div class="k">权重 RW</div><div class="v">'+drgNum(r.weight)+'</div></div>'
+    + '<div class="dc"><div class="k">平均住院日</div><div class="v">'+(r.avg_los!=null?(r.avg_los+' 天'):'—')+'</div></div>'
+    + '<div class="dc"><div class="k">参考费用</div><div class="v">'+drgMoney(r.ref_cost)+'</div></div>'
+    + '<div class="dc"><div class="k">保本费用</div><div class="v">'+drgMoney(r.break_even)+'</div></div>'
+    + '<div class="dc hl"><div class="k">按点值预估支付</div><div class="v">'+drgMoney(Math.round(pay))+'</div></div>'
+    + '</div>';
+
+  const regions = (meta.regional_rates && meta.regional_rates.regions) || [];
+  if(regions.length){
+    const inList = regions.some(function(x){ return +x.point_value === +pv; });
+    h += '<div class="sec"><div class="sec-t">点值（费率）换算</div><div class="drg-pv">'
+      + '<select onchange="setDrgPoint(this.value)">'
+      + regions.map(function(x){
+          return '<option value="'+x.point_value+'"'+(+x.point_value===+pv?' selected':'')+'>'
+            + esc(x.name)+' · '+x.point_value+' 元/权重（'+x.year+'）</option>'; }).join('')
+      + (inList?'':'<option value="'+pv+'" selected>自定义 '+pv+' 元/权重</option>')
+      + '</select>'
+      + '<input type="number" value="'+pv+'" onchange="setDrgPoint(this.value)" style="width:120px">'
+      + '<span class="muted" style="font-size:12px">支付额 = 权重 × 点值</span>'
+      + '</div><div class="muted" style="font-size:12px;margin-top:6px">'+esc((meta.regional_rates && meta.regional_rates.note)||'')+'</div></div>';
+  }
+
+  if(r.cost_low!=null && r.cost_high!=null){
+    const lo=Number(r.cost_low), hi=Number(r.cost_high);
+    const mid=(r.cost_mid!=null?Number(r.cost_mid):(lo+hi)/2);
+    const be=(r.break_even!=null?Number(r.break_even):null);
+    const mn=Math.min(lo, be==null?lo:be)*0.88, mx=Math.max(hi, be==null?hi:be)*1.06;
+    const p=function(v){ return Math.max(0, Math.min(100, (v-mn)/(mx-mn)*100)); };
+    h += '<div class="sec"><div class="sec-t">费用区间（低 / 中 / 高）</div><div class="drg-bar"><div class="track"></div>'
+      + '<div class="mark lo" style="left:'+p(lo)+'%"><span>低 '+drgMoney(lo)+'</span></div>'
+      + (be!=null?'<div class="mark be" style="left:'+p(be)+'%"><span>保本 '+drgMoney(be)+'</span></div>':'')
+      + '<div class="mark mid" style="left:'+p(mid)+'%"><span>中 '+drgMoney(mid)+'</span></div>'
+      + '<div class="mark hi" style="left:'+p(hi)+'%"><span>高 '+drgMoney(hi)+'</span></div>'
+      + '</div><table class="drg-tbl"><tr><th>低值</th><th>中值</th><th>高值</th><th>保本点</th><th>高/低</th></tr><tr>'
+      + '<td>'+drgMoney(lo)+'</td><td>'+drgMoney(mid)+'</td><td>'+drgMoney(hi)+'</td><td>'+drgMoney(be)+'</td>'
+      + '<td>'+(lo?(Math.round(hi/lo*100)/100)+' 倍':'—')+'</td></tr></table></div>';
+  }
+
+  if(r.time_index!=null || r.cost_index!=null){
+    h += '<div class="sec"><div class="sec-t">消耗指数</div><table class="drg-tbl">'
+      + '<tr><th>时间消耗指数</th><th>费用消耗指数</th><th>组别类型</th></tr><tr>'
+      + '<td>'+drgNum(r.time_index)+'</td><td>'+drgNum(r.cost_index)+'</td><td>'+esc(r.level||'—')+'</td>'
+      + '</tr></table></div>';
+  }
+
+  h += sec('入组规则','rule',r,'pre') + sec('规则细则','rule_detail',r,'pre')
+     + sec('常见诊断','common_dx',r,'list') + sec('ICD-10 编码','icd10_codes',r,'list')
+     + sec('并发症 / 合并症 CC','cc_list',r,'list') + sec('严重并发症 MCC','mcc_list',r,'list');
+  return h;
+}
+window.setDrgPoint = function(v){ v = Number(v); if(!v) return; state.drgPoint = v; renderDetail(); };
+
+/* ================= 生长曲线（内嵌「儿童生长曲线小程序」· WS/T 423—2022） ================= */
+/* 原 WHO LMS 计算器已替换为独立 canvas 图表工具，完整代码见 growth_src.js，
+   以 iframe(srcdoc) 方式隔离加载，避免样式 / 全局变量 / 元素 ID 冲突。 */
+function renderGrowthList(){
+  const el = document.getElementById('list');
+  if(el) el.innerHTML = '<div class="gf-note">儿童生长曲线图（WS/T 423—2022，7 岁以下）。'
+    + '在右侧录入月龄、身长/身高与体重，可标注到百分位曲线并查看 Z 值/百分位解读。'
+    + '测量记录自动保存在本机浏览器。</div>';
+}
+function renderGrowthDetail(){
+  const el = document.getElementById('dbody');
+  if(!el) return;
+  if(typeof window.GROWTH_SRC !== 'string'){
+    el.innerHTML = '<div class="empty">生长曲线资源未加载（growth_src.js）。请确认该文件与 index.html 位于同一目录。</div>';
+    return;
+  }
+  el.innerHTML = '<iframe class="gf-iframe" title="儿童生长曲线（WS/T 423—2022）"></iframe>';
+  const f = el.querySelector('.gf-iframe');
+  if(f){ f.srcdoc = window.GROWTH_SRC; }
+  openDetail();
+}
+
 /* ---------- per-module renderers ---------- */
 const RENDER = {
-  diseases: r=> header(r,r.category)
+  diseases: r=> header(r, r.category + (r.icd10?(' · ICD-10 '+r.icd10):''))
     + (r.summary?'<div class="summary">'+esc(r.summary)+'</div>':'')
-    + sec('临床表现','symptoms',r,'list') + sec('诊断要点','diagnosis',r,'list')
+    + sec('临床表现','symptoms',r,'list') + sec('体格检查','physical_exam',r,'list')
+    + sec('辅助检查','lab_tests',r,'list') + sec('诊断要点','diagnosis',r,'list')
     + sec('鉴别诊断','differential',r,'list')
     + sec('静脉用药','infusion',r,'list') + sec('口服用药','oral_medication',r,'list')
     + sec('治疗原则','treatment',r,'list') + sec('护理要点','management',r,'list')
+    + sec('饮食指导','diet',r,'list') + sec('专科护理','nursing',r,'list')
     + sec('注意事项','notes',r,'list') + sec('急诊指征','emergency',r,'list'),
   drugs: r=> header(r, r.category+(r.spec?' · '+r.spec:''))
     + sec('适应证','indication',r,'pre') + sec('用法用量','dose',r,'pre')
@@ -686,7 +957,27 @@ const RENDER = {
   drug_commondz: genRender(DRUG_EXTRA.drug_commondz),
   drug_zyinj: genRender(DRUG_EXTRA.drug_zyinj),
   drug_derm: genRender(DRUG_EXTRA.drug_derm),
-  drug_ophth: genRender(DRUG_EXTRA.drug_ophth)
+  drug_ophth: genRender(DRUG_EXTRA.drug_ophth),
+  drug_tcm_oral:      genRender(DRUG_EXTRA.drug_tcm_oral),
+  abx:                genRender(DRUG_EXTRA.abx),
+  antibiotic_level:   genRender(DRUG_EXTRA.antibiotic_level),
+  infusion_conflict:  genRender(DRUG_EXTRA.infusion_conflict),
+  skin_test:          genRender(DRUG_EXTRA.skin_test),
+  highrisk_drugs:     genRender(DRUG_EXTRA.highrisk_drugs),
+  drug_allergy:       genRender(DRUG_EXTRA.drug_allergy),
+  pregnancy_drugs:    genRender(DRUG_EXTRA.pregnancy_drugs),
+  pharmg:             genRender(DRUG_EXTRA.pharmg),
+  critical_values:    genRender(DRUG_EXTRA.critical_values),
+  clinical_values:    genRender(DRUG_EXTRA.clinical_values),
+  first_aid:          genRender(DRUG_EXTRA.first_aid),
+  tcm_herbs:          genRender(DRUG_EXTRA.tcm_herbs),
+  tcm_formula:        genRender(DRUG_EXTRA.tcm_formula),
+  acupoints:          genRender(DRUG_EXTRA.acupoints),
+  abbr:               genRender(DRUG_EXTRA.abbr),
+  derm:               genRender(DRUG_EXTRA.derm),
+  vaccine:            genRender(DRUG_EXTRA.vaccine),
+  icd10: r=> header(r, r.code||'ICD-10') + sec('英文名称','en',r,'pre'),
+  drg: drgRender
 };
 /* ---------- copy ---------- */
 function copyDetail(){
@@ -718,12 +1009,14 @@ gs.oninput = ()=>{
   const q=gs.value.trim().toLowerCase();
   if(!q){ gsbox.classList.remove('show'); return; }
   let res=[];
-  MODULES.forEach(m=>{ DB[m.id].forEach(r=>{
+  MODULES.forEach(m=>{ if(!Array.isArray(DB[m.id])) return; DB[m.id].forEach(r=>{
     if((r.py&&r.py.includes(q))||recText(r).includes(q)) res.push({m, r});
   }); });
+  const skipped = MODULES.filter(function(m){ return !Array.isArray(DB[m.id]) && isLazy(m.id); });
   res=res.slice(0,60);
-  gsbox.innerHTML = res.length? res.map((x,i)=>'<div class="gsitem" data-i="'+i+'"><span class="m">'+x.m.label+'</span><span class="t">'+esc(x.r.name)+'</span></div>').join('')
-    : '<div class="gsitem">无匹配</div>';
+  gsbox.innerHTML = (res.length? res.map((x,i)=>'<div class="gsitem" data-i="'+i+'"><span class="m">'+x.m.label+'</span><span class="t">'+esc(x.r.name)+'</span></div>').join('')
+    : '<div class="gsitem">无匹配</div>')
+    + (skipped.length ? '<div class="gshint">未搜索 '+skipped.length+' 个尚未加载的大模块（'+skipped.map(function(m){return m.label;}).join('、')+'）。进入这些模块后会自动加载，之后即可被搜到。</div>' : '');
   gsbox.classList.add('show');
   gsbox.querySelectorAll('.gsitem').forEach(d=>d.onclick=()=>{
     const i=+d.dataset.i; state.mod=res[i].m.id; state.cat='__ALL__'; state.q='';
@@ -752,10 +1045,7 @@ const PED_SYMPTOMS_RAW = [{"symptom":"休克","department":"其他科","summary"
   PED_DISEASES.forEach(function(d){ if(d.pinyin && !d.py) d.py = d.pinyin; });
   DB['ped_diseases'] = PED_DISEASES;
   DB['ped_symptoms'] = PED_SYMPTOMS;
-  MODULES.push(
-    {id:'ped_diseases', label:'儿科疾病库', icon:'🧒'},
-    {id:'ped_symptoms', label:'儿科症状鉴别', icon:'🔬'}
-  );
+  // 儿科两个模块已在上方 MODULES 中声明（一级分组：疾病诊疗），此处不再重复 push
 
   var SECTION_DEFS = [
     {k:'symptoms',       t:'临床表现 / 症状',     cls:''},
