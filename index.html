@@ -511,20 +511,28 @@ function ensureModule(id, cb){
   if(cntEl) cntEl.textContent='加载中…';
   if(listEl) listEl.innerHTML='<div class="empty">正在加载 <b>'+esc((MODMAP[id]&&MODMAP[id].label)||id)+'</b> 数据…</div>';
   if(bodyEl) bodyEl.innerHTML='<div class="empty">正在加载数据…</div>';
-  const s=document.createElement('script');
-  s.src='data/'+id+'.js';
-  s.onload=function(){
-    const q=_pending[id]||[]; delete _pending[id];
+  var sources = (id === 'templates') ? ['data/templates_1.js','data/templates_2.js'] : ['data/' + id + '.js'];
+  var done = 0, failed = false;
+  var finish = function(){
+    var q = _pending[id] || []; delete _pending[id];
     renderSide(); q.forEach(function(f){ f(); });
   };
-  s.onerror=function(){
-    const q=_pending[id]||[]; delete _pending[id];
-    DB[id]=[];
-    const el=document.getElementById('list');
-    if(el) el.innerHTML='<div class="warnbox">数据加载失败：<code>data/'+id+'.js</code> 未找到。<br>请确认 <code>data</code> 目录与本 HTML 在同一文件夹下。</div>';
-    renderSide(); q.forEach(function(f){ f(); });
-  };
-  document.head.appendChild(s);
+  for(var i=0; i<sources.length; i++){
+    (function(src){
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function(){ if(failed) return; if(++done < sources.length) return; finish(); };
+      s.onerror = function(){
+        if(failed) return; failed = true;
+        var q = _pending[id] || []; delete _pending[id];
+        DB[id] = [];
+        var el = document.getElementById('list');
+        if(el) el.innerHTML = '<div class="warnbox">数据加载失败：<code>'+src+'</code> 未找到。<br>请确认 <code>data</code> 目录与本 HTML 在同一文件夹下。</div>';
+        renderSide(); q.forEach(function(f){ f(); });
+      };
+      document.head.appendChild(s);
+    })(sources[i]);
+  }
 }
 rebuildModMap();
 
